@@ -97,6 +97,32 @@ apis:
     properties:
       - type: Documentation
         url: https://docs.axelarscan.io/gmp
+  - aid: axelar:amplifier-gmp-api
+    name: Axelar Amplifier GMP API
+    description: >-
+      The Amplifier GMP API is the HTTP REST integration layer exposed by the
+      Axelar Amplifier relayer service. External chain integrators and relayer
+      operators use it to publish on-chain events (CALL, MESSAGE_EXECUTED,
+      SIGNERS_ROTATED, ITS transfer events, etc.) and to poll pending
+      transaction tasks (EXECUTE, APPROVE_MESSAGES, ROTATE_SIGNERS) that must
+      be submitted to destination chains. Also supports CosmWasm contract
+      broadcast and query, and large payload pre-storage.
+    humanURL: https://github.com/axelarnetwork/amplifier-relayer-api
+    baseURL: https://amplifier.axelar.dev
+    tags:
+      - Amplifier
+      - GMP
+      - General Message Passing
+      - Cross-Chain
+      - Relayer
+      - CosmWasm
+    properties:
+      - type: Documentation
+        url: https://github.com/axelarnetwork/amplifier-relayer-api
+      - type: Repository
+        url: https://github.com/axelarnetwork/amplifier-relayer-api
+      - type: OpenAPI
+        url: openapi/amplifier-gmp-api.yaml
   - aid: axelar:axelarjs-sdk
     name: AxelarJS SDK
     description: >-

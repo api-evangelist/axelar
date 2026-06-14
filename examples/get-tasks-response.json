@@ -1,0 +1,49 @@
+{
+  "description": "Example: GET /chains/{chain}/tasks — poll pending tasks for Avalanche relayer",
+  "request": {
+    "method": "GET",
+    "path": "/chains/avalanche/tasks?limit=2"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "tasks": [
+        {
+          "id": "deadbeef-dead-beef-dead-beefdeadbeef",
+          "type": "EXECUTE",
+          "task": {
+            "message": {
+              "messageID": "0xabc123def456-call-001",
+              "sourceChain": "ethereum",
+              "sourceAddress": "0xSenderContractAddress",
+              "destinationChain": "avalanche",
+              "destinationAddress": "0xReceiverContractAddress",
+              "payloadHash": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+            },
+            "payload": "0xdeadbeef",
+            "availableGasBalance": {
+              "denom": "wavax-wei",
+              "amount": "500000000000000000"
+            }
+          }
+        },
+        {
+          "id": "cafebabe-cafe-babe-cafe-babecafebabe",
+          "type": "APPROVE_MESSAGES",
+          "task": {
+            "messages": [
+              {
+                "messageID": "0xfeed0001-feed-0001",
+                "sourceChain": "polygon",
+                "sourceAddress": "0xPolygonSender",
+                "destinationChain": "avalanche",
+                "destinationAddress": "0xAvaxReceiver",
+                "payloadHash": "0xfeedbeef00000000000000000000000000000000000000000000000000000001"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

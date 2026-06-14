@@ -1,0 +1,34 @@
+{
+  "description": "Example: POST /contracts/{wasmContractAddress}/broadcasts — execute a CosmWasm contract on Axelar for cross-chain message routing",
+  "request": {
+    "method": "POST",
+    "path": "/contracts/axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav/broadcasts",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "msg": {
+        "route_messages": {
+          "msgs": [
+            {
+              "cc_id": {
+                "source_chain": "ethereum",
+                "message_id": "0xabc123def456-call-001"
+              },
+              "destination_chain": "avalanche",
+              "destination_address": "0xReceiverContractAddress",
+              "source_address": "0xSenderContractAddress",
+              "payload_hash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "broadcastID": "deadbeef-dead-beef-dead-beefdeadbeef"
+    }
+  }
+}

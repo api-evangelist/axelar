@@ -1,0 +1,115 @@
+{
+  "vocabulary": "Axelar Network API Vocabulary",
+  "description": "Canonical terms and definitions used across the Axelar cross-chain interoperability platform and its APIs",
+  "source": "https://docs.axelar.dev/",
+  "terms": [
+    {
+      "term": "GMP",
+      "label": "General Message Passing",
+      "definition": "Axelar's protocol that allows smart contracts on one chain to call and pass arbitrary data to contracts on any other supported chain, enabling complex cross-chain dApp logic.",
+      "relatedTerms": ["Cross-Chain Call", "Payload", "CALL event"]
+    },
+    {
+      "term": "ITS",
+      "label": "Interchain Token Service",
+      "definition": "Axelar's system for deploying tokens that are natively interoperable across multiple chains, preserving canonical supply and supporting custom token managers.",
+      "relatedTerms": ["Interchain Token", "Token Manager", "ITS Hub"]
+    },
+    {
+      "term": "AXL",
+      "label": "Axelar Token",
+      "definition": "The native utility and governance token of the Axelar network, used for gas payments, validator staking, and on-chain governance proposals.",
+      "relatedTerms": ["Gas", "Validator", "Staking"]
+    },
+    {
+      "term": "GatewayContract",
+      "label": "Axelar Gateway Contract",
+      "definition": "A smart contract deployed on each connected blockchain that serves as the entry and exit point for cross-chain messages and token transfers routed through Axelar.",
+      "relatedTerms": ["GMP", "Token Transfer", "Message Approved"]
+    },
+    {
+      "term": "Amplifier",
+      "label": "Axelar Amplifier",
+      "definition": "The programmable integration layer that allows external chains and off-chain verifier networks to connect to Axelar without requiring core protocol changes, using a set of CosmWasm smart contracts.",
+      "relatedTerms": ["Amplifier GMP API", "Verifier", "Router", "Prover"]
+    },
+    {
+      "term": "AmplifierGMPAPI",
+      "label": "Amplifier GMP API",
+      "definition": "The HTTP REST API exposed by the Amplifier relayer service that external chain integrators and relayers use to publish on-chain events and poll pending transaction tasks.",
+      "relatedTerms": ["Amplifier", "PublishEvents", "GetTasks"]
+    },
+    {
+      "term": "Relayer",
+      "label": "Cross-Chain Relayer",
+      "definition": "An off-chain service responsible for monitoring source chains, calling the Amplifier GMP API to submit events, polling for pending tasks, and submitting transactions to destination chains.",
+      "relatedTerms": ["Amplifier", "Task", "Broadcast"]
+    },
+    {
+      "term": "TaskItem",
+      "label": "Task Item",
+      "definition": "A pending on-chain transaction (such as EXECUTE, APPROVE_MESSAGES, or ROTATE_SIGNERS) returned by the Amplifier relayer that a relayer must submit to the destination chain.",
+      "relatedTerms": ["Relayer", "GetTasks", "TaskItemID"]
+    },
+    {
+      "term": "BroadcastID",
+      "label": "Broadcast ID",
+      "definition": "A UUID that uniquely identifies a CosmWasm MsgExecuteContract submission to the Axelar chain through the Amplifier relayer. Used to poll broadcast status.",
+      "relatedTerms": ["Broadcast", "WasmRequest"]
+    },
+    {
+      "term": "Payload",
+      "label": "Cross-Chain Payload",
+      "definition": "Arbitrary byte data attached to a GMP call that is passed from the source contract to the destination contract on the receiving chain. Large payloads can be pre-stored by hash via the /payloads endpoint.",
+      "relatedTerms": ["GMP", "CALL event", "PayloadHash"]
+    },
+    {
+      "term": "PayloadHash",
+      "label": "Payload Hash",
+      "definition": "The keccak256 hash of a cross-chain message payload. Committed on the source chain and used by the Axelar network for verification before the payload is delivered on the destination chain.",
+      "relatedTerms": ["Payload", "GMP", "CALL event"]
+    },
+    {
+      "term": "SignersRotated",
+      "label": "Signers Rotated Event",
+      "definition": "An on-chain event indicating that the multisig threshold signing set for a connected chain's Axelar prover has been updated to a new epoch.",
+      "relatedTerms": ["Epoch", "SignersHash", "Prover", "Amplifier"]
+    },
+    {
+      "term": "Axelarscan",
+      "label": "Axelarscan Explorer & API",
+      "definition": "The block explorer and analytics API for the Axelar network, providing real-time data on validators, GMP transactions, token transfers, TVL, and network health.",
+      "relatedTerms": ["Validator", "GMP", "Token Transfer", "TVL"]
+    },
+    {
+      "term": "TVL",
+      "label": "Total Value Locked",
+      "definition": "The aggregate value of assets held by Axelar Gateway contracts across all connected chains, used as a measure of the network's economic security and adoption.",
+      "relatedTerms": ["Gateway", "AXL", "Axelarscan"]
+    },
+    {
+      "term": "Validator",
+      "label": "Axelar Validator",
+      "definition": "A node operator that participates in Axelar's proof-of-stake consensus, votes on cross-chain events, signs cross-chain transactions, and earns AXL rewards. Metrics are exposed via the Validator API.",
+      "relatedTerms": ["AXL", "Staking", "Uptime", "Quadratic Voting"]
+    },
+    {
+      "term": "EventID",
+      "label": "Event ID",
+      "definition": "A unique string identifier assigned to each on-chain event submitted to the Amplifier GMP API, used to deduplicate and track event processing state.",
+      "relatedTerms": ["PublishEvents", "Event", "Amplifier"]
+    },
+    {
+      "term": "DepositAddress",
+      "label": "Deposit Address",
+      "definition": "A one-time Axelar-generated address on a source chain to which a user sends tokens for cross-chain transfer. Generated by AxelarAssetTransfer in the AxelarJS SDK.",
+      "relatedTerms": ["AxelarJS SDK", "Token Transfer", "AxelarAssetTransfer"]
+    },
+    {
+      "term": "CosmWasm",
+      "label": "CosmWasm",
+      "definition": "A smart contract platform built on the Cosmos SDK. Axelar uses CosmWasm contracts internally for the Amplifier integration layer, including the Router, Gateway, and Prover contracts.",
+      "relatedTerms": ["Amplifier", "WasmRequest", "Broadcast"]
+    }
+  ]
+}

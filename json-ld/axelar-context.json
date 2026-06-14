@@ -1,0 +1,119 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "axelar": "https://axelar.network/vocab#",
+    "openapi": "https://openapis.org/vocab#",
+
+    "name": "schema:name",
+    "description": "schema:description",
+    "url": "schema:url",
+    "version": "schema:version",
+
+    "AmplifierGMPAPI": {
+      "@id": "axelar:AmplifierGMPAPI",
+      "@type": "@id"
+    },
+    "AxelarscanAPI": {
+      "@id": "axelar:AxelarscanAPI",
+      "@type": "@id"
+    },
+    "ValidatorAPI": {
+      "@id": "axelar:ValidatorAPI",
+      "@type": "@id"
+    },
+    "TokenTransferAPI": {
+      "@id": "axelar:TokenTransferAPI",
+      "@type": "@id"
+    },
+    "GMPAPI": {
+      "@id": "axelar:GMPAPI",
+      "@type": "@id"
+    },
+
+    "Event": {
+      "@id": "axelar:Event",
+      "@type": "@id"
+    },
+    "eventID": { "@id": "axelar:eventID" },
+    "eventType": { "@id": "axelar:eventType" },
+    "eventMetadata": { "@id": "axelar:eventMetadata" },
+    "txID": { "@id": "axelar:txID" },
+    "fromAddress": { "@id": "axelar:fromAddress" },
+    "finalized": { "@id": "axelar:finalized", "@type": "schema:Boolean" },
+    "timestamp": { "@id": "schema:DateTime" },
+
+    "Message": {
+      "@id": "axelar:Message",
+      "@type": "@id"
+    },
+    "messageID": { "@id": "axelar:messageID" },
+    "sourceChain": { "@id": "axelar:sourceChain" },
+    "sourceAddress": { "@id": "axelar:sourceAddress" },
+    "destinationChain": { "@id": "axelar:destinationChain" },
+    "destinationAddress": { "@id": "axelar:destinationAddress" },
+    "payloadHash": { "@id": "axelar:payloadHash" },
+    "payload": { "@id": "axelar:payload" },
+
+    "TaskItem": {
+      "@id": "axelar:TaskItem",
+      "@type": "@id"
+    },
+    "taskItemID": { "@id": "axelar:taskItemID" },
+    "taskType": { "@id": "axelar:taskType" },
+
+    "Broadcast": {
+      "@id": "axelar:Broadcast",
+      "@type": "@id"
+    },
+    "broadcastID": { "@id": "axelar:broadcastID" },
+    "broadcastStatus": { "@id": "axelar:broadcastStatus" },
+
+    "WasmRequest": {
+      "@id": "axelar:WasmRequest",
+      "@type": "@id"
+    },
+    "wasmContractAddress": { "@id": "axelar:wasmContractAddress" },
+    "msg": { "@id": "axelar:msg" },
+    "funds": {
+      "@id": "axelar:funds",
+      "@container": "@list"
+    },
+
+    "Validator": {
+      "@id": "axelar:Validator",
+      "@type": "@id"
+    },
+    "operatorAddress": { "@id": "axelar:operatorAddress" },
+    "uptime": { "@id": "axelar:uptime" },
+    "heartbeat": { "@id": "axelar:heartbeat" },
+    "votingPower": { "@id": "axelar:votingPower" },
+    "quadraticVotingScore": { "@id": "axelar:quadraticVotingScore" },
+
+    "TokenTransfer": {
+      "@id": "axelar:TokenTransfer",
+      "@type": "@id"
+    },
+    "denom": { "@id": "axelar:denom" },
+    "amount": { "@id": "schema:amount" },
+    "transferStatus": { "@id": "axelar:transferStatus" },
+    "confirmationCount": { "@id": "axelar:confirmationCount" },
+
+    "NetworkStats": {
+      "@id": "axelar:NetworkStats",
+      "@type": "@id"
+    },
+    "circulatingSupply": { "@id": "axelar:circulatingSupply" },
+    "totalSupply": { "@id": "axelar:totalSupply" },
+    "inflation": { "@id": "axelar:inflation" },
+    "tvl": {
+      "@id": "axelar:tvl",
+      "@type": "schema:MonetaryAmount"
+    },
+
+    "chain": { "@id": "axelar:chain" },
+    "epoch": { "@id": "axelar:epoch" },
+    "signersHash": { "@id": "axelar:signersHash" },
+    "commandID": { "@id": "axelar:commandID" }
+  }
+}

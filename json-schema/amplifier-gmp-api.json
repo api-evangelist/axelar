@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/axelar/json-schema/amplifier-gmp-api.json",
+  "title": "Amplifier GMP API Schemas",
+  "description": "JSON Schema definitions extracted from the Axelar Amplifier GMP API (OpenAPI 3.0.3). Integration layer for Amplifier chains enabling cross-chain General Message Passing.",
+  "$defs": {
+    "Address": {
+      "type": "string",
+      "description": "A blockchain address string"
+    },
+    "BroadcastID": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for a broadcast transaction"
+    },
+    "TaskItemID": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for a task item"
+    },
+    "EventType": {
+      "type": "string",
+      "description": "Type discriminator for cross-chain events",
+      "enum": [
+        "GAS_CREDIT",
+        "GAS_REFUNDED",
+        "CALL",
+        "MESSAGE_APPROVED",
+        "MESSAGE_EXECUTED",
+        "MESSAGE_EXECUTED/V2",
+        "CANNOT_EXECUTE_MESSAGE",
+        "CANNOT_EXECUTE_MESSAGE/V2",
+        "CANNOT_ROUTE_MESSAGE",
+        "CANNOT_EXECUTE_TASK",
+        "SIGNERS_ROTATED",
+        "ITS/LINK_TOKEN_STARTED",
+        "ITS/TOKEN_METADATA_REGISTERED",
+        "ITS/INTERCHAIN_TOKEN_DEPLOYMENT_STARTED",
+        "ITS/INTERCHAIN_TRANSFER",
+        "ITS/INTERCHAIN_TRANSFER_RECEIVED",
+        "ITS/INTERCHAIN_TOKEN_DEPLOYED",
+        "ITS/TOKEN_MANAGER_DEPLOYED",
+        "ITS/LINK_TOKEN_RECEIVED",
+        "ITS/FLOW_LIMIT_SET",
+        "APP/INTERCHAIN_TRANSFER_SENT",
+        "APP/INTERCHAIN_TRANSFER_RECEIVED"
+      ]
+    },
+    "EventMetadata": {
+      "type": "object",
+      "description": "Common metadata attached to all on-chain events",
+      "properties": {
+        "txID": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 1,
+          "description": "Source chain transaction ID"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the event occurred"
+        },
+        "fromAddress": {
+          "$ref": "#/$defs/Address",
+          "nullable": true,
+          "description": "Address that emitted the event"
+        },
+        "finalized": {
+          "type": "boolean",
+          "nullable": true,
+          "default": true,
+          "description": "Whether the block containing this event is finalized"
+        }
+      }
+    },
+    "EventBase": {
+      "type": "object",
+      "description": "Base structure shared by all event types",
+      "required": ["eventID", "type"],
+      "properties": {
+        "eventID": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for this event"
+        },
+        "type": {
+          "$ref": "#/$defs/EventType"
+        },
+        "meta": {
+          "$ref": "#/$defs/EventMetadata",
+          "nullable": true
+        }
+      }
+    },
+    "WasmRequest": {
+      "type": "object",
+      "description": "Request body for CosmWasm contract execute or query calls",
+      "required": ["msg"],
+      "properties": {
+        "msg": {
+          "type": "object",
+          "description": "The CosmWasm message payload (arbitrary JSON)"
+        },
+        "funds": {
+          "type": "array",
+          "description": "Optional coins to send with the contract call",
+          "items": {
+            "type": "object",
+            "required": ["denom", "amount"],
+            "properties": {
+              "denom": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BroadcastResponse": {
+      "type": "object",
+      "description": "Response returned after broadcasting a MsgExecuteContract",
+      "required": ["broadcastID"],
+      "properties": {
+        "broadcastID": {
+          "$ref": "#/$defs/BroadcastID"
+        }
+      }
+    },
+    "BroadcastStatusResponse": {
+      "type": "object",
+      "description": "Status of a previously submitted broadcast",
+      "required": ["status"],
+      "properties": {
+        "broadcastID": {
+          "$ref": "#/$defs/BroadcastID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING", "SUCCESS", "FAILED"],
+          "description": "Current state of the broadcast"
+        },
+        "txHash": {
+          "type": "string",
+          "nullable": true,
+          "description": "On-chain transaction hash once mined"
+        },
+        "error": {
+          "type": "string",
+          "nullable": true,
+          "description": "Error message if the broadcast failed"
+        }
+      }
+    },
+    "PublishEventsRequest": {
+      "type": "object",
+      "description": "Request body for publishing a batch of on-chain events to the Amplifier relayer",
+      "required": ["events"],
+      "properties": {
+        "events": {
+          "type": "array",
+          "description": "Batch of cross-chain events (1-100)",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/EventBase"
+          }
+        }
+      }
+    },
+    "GetTasksResult": {
+      "type": "object",
+      "description": "Paginated list of pending tasks for a chain",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TaskItem"
+          }
+        }
+      }
+    },
+    "TaskItem": {
+      "type": "object",
+      "description": "A transaction task to be executed on-chain by a relayer",
+      "required": ["id", "type"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/TaskItemID"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of task (e.g. EXECUTE, APPROVE_MESSAGES, ROTATE_SIGNERS)"
+        },
+        "task": {
+          "type": "object",
+          "description": "Task-specific payload"
+        }
+      }
+    },
+    "PayloadStoreRequest": {
+      "type": "object",
+      "description": "Request to store a large cross-chain payload by its hash",
+      "required": ["payload"],
+      "properties": {
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "description": "Base64-encoded payload bytes"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "description": "Standard error envelope returned by the Amplifier GMP API",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "Human-readable error message"
+        }
+      }
+    }
+  }
+}

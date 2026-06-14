@@ -1,0 +1,64 @@
+{
+  "description": "Example: POST /chains/{chain}/events — publish a CALL and a MESSAGE_EXECUTED event for an Ethereum→Avalanche GMP transaction",
+  "request": {
+    "method": "POST",
+    "path": "/chains/ethereum/events",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "events": [
+        {
+          "type": "CALL",
+          "eventID": "0xabc123def456-call-001",
+          "meta": {
+            "txID": "0xabc123def4560000000000000000000000000000000000000000000000000001",
+            "timestamp": "2026-06-13T10:00:00Z",
+            "fromAddress": "0xSenderContractAddress",
+            "finalized": true
+          },
+          "message": {
+            "messageID": "0xabc123def456-call-001",
+            "sourceChain": "ethereum",
+            "sourceAddress": "0xSenderContractAddress",
+            "destinationChain": "avalanche",
+            "destinationAddress": "0xReceiverContractAddress",
+            "payloadHash": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+          },
+          "destinationChain": "avalanche",
+          "payload": "0xdeadbeef"
+        },
+        {
+          "type": "MESSAGE_EXECUTED",
+          "eventID": "0xdef456abc123-executed-001",
+          "meta": {
+            "txID": "0xdef456abc1230000000000000000000000000000000000000000000000000002",
+            "timestamp": "2026-06-13T10:05:00Z",
+            "fromAddress": "0xRelayerAddress",
+            "finalized": true,
+            "commandID": "cmd-0001",
+            "childMessageIDs": [],
+            "revertReason": null
+          },
+          "message": {
+            "messageID": "0xabc123def456-call-001",
+            "sourceChain": "ethereum",
+            "sourceAddress": "0xSenderContractAddress",
+            "destinationChain": "avalanche",
+            "destinationAddress": "0xReceiverContractAddress",
+            "payloadHash": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "results": [
+        { "eventID": "0xabc123def456-call-001", "status": "ACCEPTED" },
+        { "eventID": "0xdef456abc123-executed-001", "status": "ACCEPTED" }
+      ]
+    }
+  }
+}
