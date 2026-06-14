@@ -1,0 +1,101 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Axelar
+providerId: axelar
+created: '2026-06-13'
+modified: '2026-06-13'
+reconciled: false
+tags:
+  - Blockchain
+  - Cross-Chain
+  - Interoperability
+  - Web3
+  - Rate Limiting
+description: >-
+  Axelar does not publish explicit numeric rate limits for the Axelarscan API
+  suite (api.axelarscan.io). The APIs are publicly accessible with no API key
+  requirement and rely on OpenSearch-backed cached data for efficient serving.
+  Sustained high-frequency polling beyond normal application usage may result
+  in server-side throttling with HTTP 429 responses. On-chain GMP and token
+  transfer operations are bounded by underlying blockchain transaction
+  throughput and the Axelar network's validator consensus latency, not by
+  HTTP-level rate limits. This artifact remains reconciled:false until Axelar
+  publishes explicit per-minute or per-second limits in their developer docs.
+sources:
+  - https://docs.axelarscan.io/
+  - https://docs.axelar.dev/
+  - https://github.com/axelarnetwork/axelarscan-api
+responseCodes:
+  throttled: 429
+  unauthorized: 401
+  serverError: 5xx
+limits:
+  - name: Axelarscan API Public Throughput
+    scope: global
+    metric: requests
+    limit: unspecified
+    timeFrame: minute
+    notes: >-
+      No published numeric ceiling. Responses are served from OpenSearch cache
+      with sub-second latency. High-frequency polling (e.g., per-second
+      scraping) may trigger server-side throttling. Use caching locally to
+      minimize repeat calls.
+  - name: Validator API Public Throughput
+    scope: global
+    metric: requests
+    limit: unspecified
+    timeFrame: minute
+    notes: >-
+      No published numeric ceiling. Validator metrics update periodically;
+      polling more frequently than every 60 seconds provides minimal benefit.
+  - name: Token Transfer API Public Throughput
+    scope: global
+    metric: requests
+    limit: unspecified
+    timeFrame: minute
+    notes: >-
+      No published numeric ceiling. Transfer status is updated as cross-chain
+      confirmations arrive; polling more than once per block is unnecessary.
+  - name: GMP API Public Throughput
+    scope: global
+    metric: requests
+    limit: unspecified
+    timeFrame: minute
+    notes: >-
+      No published numeric ceiling. GMP status progresses through discrete
+      states (source-confirmed, axelar-confirmed, destination-executed); polling
+      intervals of 10-30 seconds are sufficient for most monitoring use cases.
+  - name: On-Chain GMP Transaction Throughput
+    scope: network
+    metric: cross_chain_transactions
+    limit: network-bound
+    timeFrame: block
+    notes: >-
+      Limited by source and destination chain block times and Axelar validator
+      consensus rounds. No HTTP-level rate limit; throughput scales with
+      validator set capacity and network congestion.
+policies:
+  - name: Exponential Backoff on 429
+    description: >-
+      If the Axelarscan API returns HTTP 429, implement exponential backoff with
+      jitter before retrying. Avoid tight polling loops.
+  - name: Local Response Caching
+    description: >-
+      Cache TVL, supply, and network-stats responses locally for at least 60
+      seconds. These values are pre-computed server-side and do not change
+      faster than the underlying chain's block time.
+  - name: Event-Driven Status Polling
+    description: >-
+      For GMP and token transfer status tracking, poll only after the expected
+      confirmation window has elapsed (typically 2-15 minutes depending on
+      source/destination chains). Consider switching to Axelar's testnet for
+      development to avoid congesting mainnet APIs.
+  - name: SDK-Mediated Calls
+    description: >-
+      Prefer the AxelarJS SDK (AxelarGMPRecoveryAPI, AxelarQueryAPI) over
+      direct HTTP polling. The SDK incorporates appropriate retry and backoff
+      logic and abstracts endpoint details that may change.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

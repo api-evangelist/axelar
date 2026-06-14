@@ -1,0 +1,117 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Axelar
+providerId: axelar
+created: '2026-06-13'
+modified: '2026-06-13'
+reconciled: false
+tags:
+  - Blockchain
+  - Cross-Chain
+  - Interoperability
+  - Web3
+  - Plans
+description: >-
+  Axelar does not publish tiered SaaS pricing for its network APIs. The
+  Axelarscan APIs (network, validator, token transfer, GMP) are publicly
+  accessible at api.axelarscan.io at no direct cost; usage is implicitly
+  subsidized by the Axelar network's AXL token economics and validator fees.
+  Cross-chain transaction fees (gas relaying) are paid on-chain in AXL or
+  the native gas token of the source chain, and vary by destination chain and
+  payload size. The AxelarJS SDK is MIT-licensed and free to use. Enterprise
+  integrators may engage the Axelar Foundation for dedicated support or custom
+  integrations. Use reconciled:false until an official developer pricing page
+  is published.
+sources:
+  - https://axelar.network/
+  - https://docs.axelar.dev/
+  - https://docs.axelarscan.io/
+plans:
+  - id: axelar-public-api
+    name: Axelar Public API (Free)
+    type: free
+    description: >-
+      Open access to the Axelarscan API suite (network stats, validator metrics,
+      token transfer data, and GMP data) with no API key required. Rate limits
+      are not published; sustained high-volume usage may be throttled server-side.
+    entries:
+      - label: Axelarscan API Requests
+        name: axelarscan_requests
+        type: metered
+        metric: request
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: free
+        userMultiplied: false
+      - label: Validator API Requests
+        name: validator_requests
+        type: metered
+        metric: request
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: free
+        userMultiplied: false
+      - label: Token Transfer API Requests
+        name: token_transfer_requests
+        type: metered
+        metric: request
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: free
+        userMultiplied: false
+      - label: GMP API Requests
+        name: gmp_requests
+        type: metered
+        metric: request
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: free
+        userMultiplied: false
+    elements:
+      - name: Axelarscan API (Network & Token Stats)
+      - name: Validator API (Uptime & Metrics)
+      - name: Token Transfer API (Status & Stats)
+      - name: GMP API (Status & Gas Estimation)
+      - name: AxelarJS SDK (MIT-licensed)
+  - id: axelar-onchain-relaying
+    name: Axelar On-Chain Relaying (Pay-per-Use)
+    type: metered
+    description: >-
+      On-chain gas fees paid by the developer or end user when initiating
+      cross-chain GMP calls or token transfers. Fees are estimated via the
+      AxelarQueryAPI and paid upfront through the AxelarGasService contract
+      at the time of the callContract() or token transfer initiation.
+      Amounts vary by destination chain, payload complexity, and real-time
+      gas prices. No subscription or monthly commitment required.
+    entries:
+      - label: GMP Call Relay Fee
+        name: gmp_relay_fee
+        type: metered
+        metric: cross_chain_call
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: variable (on-chain gas)
+        userMultiplied: false
+      - label: Token Transfer Relay Fee
+        name: token_transfer_fee
+        type: metered
+        metric: transfer
+        limit: -1
+        timeFrame: usage
+        unit: 1
+        price: variable (on-chain gas)
+        userMultiplied: false
+    elements:
+      - name: Cross-Chain GMP Call Relaying
+      - name: Cross-Chain Token Transfer Relaying
+      - name: Gas Estimation via AxelarQueryAPI
+      - name: Interchain Token Service (ITS) Transfers
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

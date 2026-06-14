@@ -1,0 +1,126 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Axelar
+providerId: axelar
+created: '2026-06-13'
+modified: '2026-06-13'
+reconciled: false
+tags:
+  - Blockchain
+  - Cross-Chain
+  - Interoperability
+  - Web3
+  - FinOps
+  - FOCUS
+description: >-
+  FOCUS-aligned FinOps for Axelar. The dominant developer cost is on-chain gas
+  relaying fees paid via the AxelarGasService contract when initiating GMP
+  calls or token transfers. These fees are variable, denominated in AXL or the
+  native gas token, and scale with destination chain gas prices and payload
+  complexity. The Axelarscan REST APIs (network stats, validator, token
+  transfer, GMP) are publicly free. The AxelarJS SDK is MIT-licensed and
+  carries no licensing cost. Cost attribution is typically per cross-chain
+  transaction, making usage-based allocation straightforward. This artifact
+  remains reconciled:false until Axelar publishes an official billing dashboard
+  or FOCUS-compliant cost export.
+sources:
+  - https://axelar.network/
+  - https://docs.axelar.dev/
+  - https://docs.axelarscan.io/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Axelar Foundation
+serviceCategory: Blockchain Infrastructure
+billingModel:
+  pricingCategory: On-Chain Gas Fees (Variable) + Free REST APIs
+  billingFrequency: Per-Transaction (on-chain)
+  billingCurrency: AXL / native chain token
+  chargeCategories:
+    - Usage
+    - Tax
+focusColumns:
+  ServiceName: Axelar Network
+  ServiceCategory: Blockchain Infrastructure
+  ProviderName: Axelar
+  PublisherName: Axelar Foundation
+  InvoiceIssuerName: Axelar Foundation
+  BillingCurrency: AXL
+  ChargeCategory: Usage
+meters:
+  - name: gmp_relay_fee
+    description: >-
+      On-chain gas fee paid to the AxelarGasService contract for relaying a
+      GMP callContract() or callContractWithToken() call to the destination
+      chain. Estimated via AxelarQueryAPI.estimateGasFee() before submission.
+    unit: cross_chain_call
+    aggregation: sum
+    dimensions:
+      - source_chain
+      - destination_chain
+      - gas_token
+  - name: token_transfer_fee
+    description: >-
+      On-chain fee for cross-chain token transfers via the Axelar gateway or
+      Interchain Token Service (ITS). Includes Axelar network fee and
+      destination chain execution gas.
+    unit: transfer
+    aggregation: sum
+    dimensions:
+      - source_chain
+      - destination_chain
+      - asset_denom
+  - name: axelarscan_api_requests
+    description: >-
+      REST API calls to api.axelarscan.io for network stats, validator data,
+      token transfer status, and GMP data. No direct monetary cost; included
+      for visibility and capacity planning.
+    unit: request
+    aggregation: sum
+    dimensions:
+      - api_category
+      - environment
+  - name: axl_staking_cost
+    description: >-
+      Opportunity cost of AXL tokens staked to validators for network security
+      participation. Not a direct billed line item but relevant for treasury
+      FinOps tracking.
+    unit: axl_token
+    aggregation: sum
+    dimensions:
+      - validator_address
+      - delegator_address
+principles:
+  - name: Visibility
+    description: >-
+      Track on-chain gas expenditure per application by logging the transaction
+      hash from each AxelarGasService payment against your internal cost center.
+      Use the GMP API and Token Transfer API to correlate relayed transactions
+      with gas paid and identify failed or overpaid calls.
+  - name: Allocation
+    description: >-
+      Tag cross-chain calls at the application layer with a per-product or
+      per-team identifier in the payload or via a dedicated gas-payment wallet
+      per team. Since there is no centralized Axelar billing dashboard, on-chain
+      wallet segregation is the primary cost allocation mechanism.
+  - name: Optimization
+    description: >-
+      Use AxelarQueryAPI.estimateGasFee() before every GMP call to avoid
+      overpaying. Batch token transfers where possible to amortize per-call
+      fixed fees. Monitor the GMP API for underfunded transactions and use
+      addNativeGas() for targeted top-ups rather than blanket gas overpayment.
+      Run integration testing on the Axelar testnet to avoid burning real AXL
+      or ETH on development calls.
+  - name: Accountability
+    description: >-
+      Assign a Web3 treasury owner responsible for monitoring the gas-payment
+      wallets. Set alert thresholds on wallet balances and on-chain spend rates.
+      Review gas usage after major product launches or chain expansions to
+      recalibrate gas budgets.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
