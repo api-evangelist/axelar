@@ -11,7 +11,7 @@ description: >-
   suite for querying network state, validator metrics, token transfer status,
   and GMP transaction data. Developer tooling includes the AxelarJS SDK, the
   Mobius Development Stack (MDS), and Axelar Virtual Machine (AVM).
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Blockchain
   - Cross-Chain
