@@ -147,6 +147,8 @@ apis:
       - type: Repository
         url: https://github.com/axelarnetwork/axelarjs-sdk
 common:
+  - type: DomainSecurity
+    url: security/axelar-domain-security.yml
   - type: Website
     url: https://axelar.network/
   - type: Documentation

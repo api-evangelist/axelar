@@ -1,0 +1,40 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: axelar.network
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 30 17:50:21 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: docs.axelarscan.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  1 09:28:46 2026 GMT
+  hsts: true
+  hsts_max_age: 15552000
+- host: api.axelarscan.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  1 23:59:39 2026 GMT
+  hsts: null
+domains:
+- domain: axelar.network
+  dnssec: true
+  caa:
+  - 0 issue "pki.goog; cansignhttpexchanges=yes"
+  - 0 issue "ssl.com"
+  - 0 issuewild "amazon.com"
+  - 0 issuewild "comodoca.com"
+  - 0 issuewild "digicert.com; cansignhttpexchanges=yes"
+  - 0 issuewild "letsencrypt.org"
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: axelarscan.io
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
