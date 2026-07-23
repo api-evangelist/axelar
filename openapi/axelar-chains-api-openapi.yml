@@ -1,0 +1,1459 @@
+openapi: 3.0.3
+info:
+  title: Amplifier GMP Chains API
+  description: Integration layer for Amplifier chains
+  version: 1.0.0
+tags:
+- name: Chains
+paths:
+  /chains/{chain}/events:
+    post:
+      summary: Publish on-chain events
+      operationId: publishEvents
+      parameters:
+      - $ref: '#/components/parameters/chain'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishEventsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishEventsResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Chain Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Chains
+  /chains/{chain}/tasks:
+    get:
+      summary: Poll transaction to be executed on chain
+      operationId: getTasks
+      parameters:
+      - $ref: '#/components/parameters/chain'
+      - $ref: '#/components/parameters/after'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTasksResult'
+        '404':
+          description: Chain Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Chains
+  /chains/{chain}/tasks/{taskItemID}:
+    get:
+      summary: Retrieve a transaction to be executed on-chain by id
+      operationId: getTask
+      parameters:
+      - $ref: '#/components/parameters/chain'
+      - $ref: '#/components/parameters/taskItemID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTaskResult'
+        '404':
+          description: Chain Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Chains
+components:
+  schemas:
+    EventBase:
+      type: object
+      properties:
+        eventID:
+          type: string
+          minLength: 1
+        meta:
+          allOf:
+          - $ref: '#/components/schemas/EventMetadata'
+          nullable: true
+          x-omitempty: true
+      required:
+      - eventID
+    PublishEventsRequest:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          minItems: 1
+          maxItems: 100
+      required:
+      - events
+    MessageExecutedEvent:
+      deprecated: true
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/MessageExecutedEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          sourceChain:
+            type: string
+            minLength: 1
+          status:
+            $ref: '#/components/schemas/MessageExecutionStatus'
+          cost:
+            $ref: '#/components/schemas/Cost'
+        required:
+        - messageID
+        - sourceChain
+        - status
+        - cost
+    AppEventMetadata:
+      allOf:
+      - $ref: '#/components/schemas/EventMetadata'
+      - properties:
+          emittedByAddress:
+            allOf:
+            - $ref: '#/components/schemas/Address'
+            nullable: true
+            x-omitempty: true
+    BroadcastID:
+      type: string
+      minLength: 1
+      x-go-type: uuid.UUID
+      x-go-type-import:
+        path: github.com/google/uuid
+        name: uuid
+    CallEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/CallEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          message:
+            $ref: '#/components/schemas/Message'
+          destinationChain:
+            type: string
+            minLength: 1
+          payload:
+            type: string
+            format: byte
+          withToken:
+            $ref: '#/components/schemas/UnsignedTokenWithRequiredID'
+        required:
+        - message
+        - destinationChain
+        - payload
+    CannotRouteMessageEvent:
+      deprecated: true
+      description: 'Event emitted when a message cannot be routed. Source chain of the message is implied to be the chain from which the event is emitted.
+
+        '
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          reason:
+            $ref: '#/components/schemas/CannotRouteMessageReason'
+          details:
+            type: string
+            minLength: 1
+        required:
+        - messageID
+        - reason
+        - details
+    Fees:
+      type: array
+      items:
+        $ref: '#/components/schemas/Fee'
+    GetTasksResult:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskItem'
+      required:
+      - tasks
+    SourceChainTaskMetadata:
+      description: 'Metadata attached to REFUND and VERIFY tasks. It carries values passed in the associated CALL event (if any) back to the source chain.
+
+        '
+      type: object
+      properties:
+        sourceContext:
+          $ref: '#/components/schemas/MessageContext'
+    Event:
+      oneOf:
+      - $ref: '#/components/schemas/GasCreditEvent'
+      - $ref: '#/components/schemas/GasRefundedEvent'
+      - $ref: '#/components/schemas/CallEvent'
+      - $ref: '#/components/schemas/MessageApprovedEvent'
+      - $ref: '#/components/schemas/MessageExecutedEvent'
+      - $ref: '#/components/schemas/MessageExecutedEventV2'
+      - $ref: '#/components/schemas/CannotExecuteMessageEvent'
+      - $ref: '#/components/schemas/CannotExecuteMessageEventV2'
+      - $ref: '#/components/schemas/CannotRouteMessageEvent'
+      - $ref: '#/components/schemas/CannotExecuteTaskEvent'
+      - $ref: '#/components/schemas/SignersRotatedEvent'
+      - $ref: '#/components/schemas/ITSLinkTokenStartedEvent'
+      - $ref: '#/components/schemas/ITSTokenMetadataRegisteredEvent'
+      - $ref: '#/components/schemas/ITSInterchainTokenDeploymentStartedEvent'
+      - $ref: '#/components/schemas/ITSInterchainTransferEvent'
+      - $ref: '#/components/schemas/ITSInterchainTransferReceivedEvent'
+      - $ref: '#/components/schemas/ITSInterchainTokenDeployedEvent'
+      - $ref: '#/components/schemas/ITSTokenManagerDeployedEvent'
+      - $ref: '#/components/schemas/ITSLinkTokenReceivedEvent'
+      - $ref: '#/components/schemas/ITSFlowLimitSetEvent'
+      - $ref: '#/components/schemas/AppInterchainTransferSentEvent'
+      - $ref: '#/components/schemas/AppInterchainTransferReceivedEvent'
+      discriminator:
+        propertyName: type
+        mapping:
+          GAS_CREDIT: '#/components/schemas/GasCreditEvent'
+          GAS_REFUNDED: '#/components/schemas/GasRefundedEvent'
+          CALL: '#/components/schemas/CallEvent'
+          MESSAGE_APPROVED: '#/components/schemas/MessageApprovedEvent'
+          MESSAGE_EXECUTED: '#/components/schemas/MessageExecutedEvent'
+          MESSAGE_EXECUTED/V2: '#/components/schemas/MessageExecutedEventV2'
+          CANNOT_EXECUTE_MESSAGE: '#/components/schemas/CannotExecuteMessageEvent'
+          CANNOT_EXECUTE_MESSAGE/V2: '#/components/schemas/CannotExecuteMessageEventV2'
+          CANNOT_ROUTE_MESSAGE: '#/components/schemas/CannotRouteMessageEvent'
+          CANNOT_EXECUTE_TASK: '#/components/schemas/CannotExecuteTaskEvent'
+          SIGNERS_ROTATED: '#/components/schemas/SignersRotatedEvent'
+          ITS/LINK_TOKEN_STARTED: '#/components/schemas/ITSLinkTokenStartedEvent'
+          ITS/TOKEN_METADATA_REGISTERED: '#/components/schemas/ITSTokenMetadataRegisteredEvent'
+          ITS/INTERCHAIN_TOKEN_DEPLOYMENT_STARTED: '#/components/schemas/ITSInterchainTokenDeploymentStartedEvent'
+          ITS/INTERCHAIN_TRANSFER: '#/components/schemas/ITSInterchainTransferEvent'
+          ITS/INTERCHAIN_TRANSFER_RECEIVED: '#/components/schemas/ITSInterchainTransferReceivedEvent'
+          ITS/INTERCHAIN_TOKEN_DEPLOYED: '#/components/schemas/ITSInterchainTokenDeployedEvent'
+          ITS/TOKEN_MANAGER_DEPLOYED: '#/components/schemas/ITSTokenManagerDeployedEvent'
+          ITS/LINK_TOKEN_RECEIVED: '#/components/schemas/ITSLinkTokenReceivedEvent'
+          ITS/FLOW_LIMIT_SET: '#/components/schemas/ITSFlowLimitSetEvent'
+          APP/INTERCHAIN_TRANSFER_SENT: '#/components/schemas/AppInterchainTransferSentEvent'
+          APP/INTERCHAIN_TRANSFER_RECEIVED: '#/components/schemas/AppInterchainTransferReceivedEvent'
+      properties:
+        type:
+          $ref: '#/components/schemas/EventType'
+      required:
+      - type
+    SignersRotatedEventMetadata:
+      allOf:
+      - $ref: '#/components/schemas/EventMetadata'
+      - properties:
+          signersHash:
+            type: string
+            format: byte
+            minLength: 1
+          epoch:
+            type: integer
+            format: int64
+            minimum: 0
+    WasmEventAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required:
+      - key
+      - value
+    BigInt:
+      type: string
+      pattern: ^(0|-?[1-9]\d*)$
+    ITSInterchainTokenDeploymentStartedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          destinationChain:
+            type: string
+            minLength: 1
+          token:
+            $ref: '#/components/schemas/InterchainTokenDefinition'
+        required:
+        - destinationChain
+        - messageID
+        - token
+    MessageExecutionStatus:
+      deprecated: true
+      type: string
+      enum:
+      - SUCCESSFUL
+      - REVERTED
+      x-enum-varnames:
+      - MessageExecutionStatusSuccessful
+      - MessageExecutionStatusReverted
+    GetTaskResult:
+      type: object
+      properties:
+        task:
+          $ref: '#/components/schemas/TaskItem'
+      required:
+      - task
+    Token:
+      type: object
+      properties:
+        tokenID:
+          allOf:
+          - $ref: '#/components/schemas/TokenID'
+          nullable: true
+          x-omitempty: true
+        amount:
+          $ref: '#/components/schemas/BigInt'
+      required:
+      - amount
+    Message:
+      type: object
+      properties:
+        messageID:
+          type: string
+          minLength: 1
+        sourceChain:
+          type: string
+          minLength: 1
+        sourceAddress:
+          $ref: '#/components/schemas/Address'
+        destinationAddress:
+          $ref: '#/components/schemas/Address'
+        payloadHash:
+          type: string
+          format: byte
+          minLength: 1
+      required:
+      - messageID
+      - sourceChain
+      - sourceAddress
+      - destinationAddress
+      - payloadHash
+    TokenManagerType:
+      type: string
+      enum:
+      - NATIVE_INTERCHAIN_TOKEN
+      - MINT_BURN_FROM
+      - LOCK_UNLOCK
+      - LOCK_UNLOCK_FEE
+      - MINT_BURN
+      x-enum-varnames:
+      - TokenManagerNativeInterchainToken
+      - TokenManagerMintBurnFrom
+      - TokenManagerLockUnlock
+      - TokenManagerLockUnlockFee
+      - TokenManagerMintBurn
+    Task:
+      oneOf:
+      - $ref: '#/components/schemas/ConstructProofTask'
+      - $ref: '#/components/schemas/ExecuteTask'
+      - $ref: '#/components/schemas/GatewayTransactionTask'
+      - $ref: '#/components/schemas/ReactToWasmEventTask'
+      - $ref: '#/components/schemas/RefundTask'
+      - $ref: '#/components/schemas/ReactToExpiredSigningSessionTask'
+      - $ref: '#/components/schemas/ReactToRetriablePollTask'
+      - $ref: '#/components/schemas/VerifyTask'
+    Cost:
+      anyOf:
+      - $ref: '#/components/schemas/UnsignedToken'
+      - $ref: '#/components/schemas/Fees'
+    ITSLinkTokenReceivedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          tokenID:
+            $ref: '#/components/schemas/TokenID'
+          sourceChain:
+            type: string
+            minLength: 1
+          sourceTokenAddress:
+            type: string
+            format: byte
+            minLength: 1
+          destinationTokenAddress:
+            type: string
+            format: byte
+            minLength: 1
+          tokenManagerType:
+            $ref: '#/components/schemas/TokenManagerType'
+        required:
+        - messageID
+        - tokenID
+        - sourceChain
+        - sourceTokenAddress
+        - destinationTokenAddress
+        - tokenManagerType
+    MessageExecutedEventV2:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/MessageExecutedEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          crossChainID:
+            $ref: '#/components/schemas/CrossChainID'
+          cost:
+            $ref: '#/components/schemas/Cost'
+        required:
+        - crossChainID
+        - cost
+    TaskMetadata:
+      allOf:
+      - $ref: '#/components/schemas/DestinationChainTaskMetadata'
+      - $ref: '#/components/schemas/SourceChainTaskMetadata'
+    TokenID:
+      type: string
+    ReactToRetriablePollTask:
+      properties:
+        pollID:
+          type: integer
+          format: uint64
+        broadcastID:
+          $ref: '#/components/schemas/BroadcastID'
+        invokedContractAddress:
+          $ref: '#/components/schemas/Address'
+        requestPayload:
+          $ref: '#/components/schemas/WasmRequest'
+        quorumReachedEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuorumReachedEvent'
+      required:
+      - pollID
+      - broadcastID
+      - invokedContractAddress
+      - requestPayload
+      - quorumReachedEvents
+    GatewayTransactionTask:
+      properties:
+        executeData:
+          type: string
+          format: byte
+          minLength: 1
+      required:
+      - executeData
+    Fee:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/FeeMetadata'
+        id:
+          type: string
+          minLength: 1
+          x-go-name: ID
+        description:
+          type: string
+        token:
+          $ref: '#/components/schemas/UnsignedToken'
+      required:
+      - id
+      - token
+    MessageExecutedEventMetadata:
+      allOf:
+      - $ref: '#/components/schemas/EventMetadata'
+      - properties:
+          commandID:
+            type: string
+            nullable: true
+            x-omitempty: true
+            minLength: 1
+          childMessageIDs:
+            type: array
+            nullable: true
+            x-omitempty: true
+            items:
+              type: string
+              minLength: 1
+          revertReason:
+            type: string
+            nullable: true
+            x-omitempty: true
+    EventType:
+      type: string
+      enum:
+      - GAS_CREDIT
+      - GAS_REFUNDED
+      - CALL
+      - MESSAGE_APPROVED
+      - MESSAGE_EXECUTED
+      - MESSAGE_EXECUTED/V2
+      - CANNOT_EXECUTE_MESSAGE
+      - CANNOT_EXECUTE_MESSAGE/V2
+      - CANNOT_ROUTE_MESSAGE
+      - CANNOT_EXECUTE_TASK
+      - SIGNERS_ROTATED
+      - ITS/LINK_TOKEN_STARTED
+      - ITS/TOKEN_METADATA_REGISTERED
+      - ITS/INTERCHAIN_TOKEN_DEPLOYMENT_STARTED
+      - ITS/INTERCHAIN_TRANSFER
+      - ITS/INTERCHAIN_TRANSFER_RECEIVED
+      - ITS/INTERCHAIN_TOKEN_DEPLOYED
+      - ITS/TOKEN_MANAGER_DEPLOYED
+      - ITS/LINK_TOKEN_RECEIVED
+      - ITS/FLOW_LIMIT_SET
+      - APP/INTERCHAIN_TRANSFER_SENT
+      - APP/INTERCHAIN_TRANSFER_RECEIVED
+      x-enum-varnames:
+      - EventTypeGasCredit
+      - EventTypeGasRefunded
+      - EventTypeCall
+      - EventTypeMessageApproved
+      - EventTypeMessageExecuted
+      - EventTypeMessageExecutedV2
+      - EventTypeCannotExecuteMessage
+      - EventTypeCannotExecuteMessageV2
+      - EventTypeCannotRouteMessage
+      - EventTypeCannotExecuteTask
+      - EventTypeSignersRotated
+      - EventTypeITSLinkTokenStarted
+      - EventTypeITSTokenMetadataRegistered
+      - EventTypeITSInterchainTokenDeploymentStarted
+      - EventTypeITSInterchainTransfer
+      - EventTypeITSInterchainTransferReceived
+      - EventTypeITSInterchainTokenDeployed
+      - EventTypeITSTokenManagerDeployed
+      - EventTypeITSLinkTokenReceived
+      - EventTypeITSFlowLimitSet
+      - EventTypeAppInterchainTransferSent
+      - EventTypeAppInterchainTransferReceived
+    FeeMetadata:
+      type: object
+      properties:
+        txID:
+          type: string
+          nullable: true
+          x-omitempty: true
+          minLength: 1
+    AppInterchainTransferSentEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/AppEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          destinationChain:
+            type: string
+            minLength: 1
+          destinationContractAddress:
+            $ref: '#/components/schemas/Address'
+          sender:
+            $ref: '#/components/schemas/Address'
+          recipient:
+            type: string
+            format: byte
+            minLength: 1
+          tokenSpent:
+            $ref: '#/components/schemas/InterchainTransferTokenWithAddress'
+        required:
+        - messageID
+        - destinationChain
+        - destinationContractAddress
+        - sender
+        - recipient
+        - tokenSpent
+    WasmRequestWithStringBody:
+      type: string
+      minLength: 1
+    CannotExecuteMessageEventV2Metadata:
+      deprecated: true
+      type: object
+      properties:
+        fromAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          nullable: true
+          x-omitempty: true
+        timestamp:
+          type: string
+          format: date-time
+        taskItemID:
+          $ref: '#/components/schemas/TaskItemID'
+    VerifyTask:
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+        destinationChain:
+          type: string
+          minLength: 1
+        payload:
+          type: string
+          format: byte
+          minLength: 1
+      required:
+      - message
+      - destinationChain
+      - payload
+    CannotExecuteTaskEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          taskItemID:
+            $ref: '#/components/schemas/TaskItemID'
+          reason:
+            $ref: '#/components/schemas/CannotExecuteTaskReason'
+          details:
+            type: string
+            minLength: 1
+          cost:
+            $ref: '#/components/schemas/Cost'
+        required:
+        - taskItemID
+        - reason
+        - details
+    AppInterchainTransferReceivedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/AppEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          sourceChain:
+            type: string
+            minLength: 1
+          sourceAddress:
+            $ref: '#/components/schemas/Address'
+          sender:
+            type: string
+            format: byte
+          recipient:
+            $ref: '#/components/schemas/Address'
+          tokenReceived:
+            $ref: '#/components/schemas/InterchainTransferTokenWithAddress'
+        required:
+        - messageID
+        - sourceChain
+        - sourceAddress
+        - sender
+        - recipient
+        - tokenReceived
+    CannotExecuteMessageEventV2:
+      deprecated: true
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/CannotExecuteMessageEventV2Metadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          sourceChain:
+            type: string
+            minLength: 1
+          reason:
+            $ref: '#/components/schemas/CannotExecuteMessageReason'
+          details:
+            type: string
+            minLength: 1
+        required:
+        - messageID
+        - sourceChain
+        - reason
+        - details
+    PublishEventResultItemBase:
+      properties:
+        status:
+          $ref: '#/components/schemas/PublishEventStatus'
+        index:
+          type: integer
+          minimum: 0
+      required:
+      - status
+      - index
+    PublishEventStatus:
+      type: string
+      enum:
+      - ACCEPTED
+      - ERROR
+      x-enum-varnames:
+      - PublishEventStatusAccepted
+      - PublishEventStatusError
+    UnsignedBigInt:
+      type: string
+      pattern: ^(0|[1-9]\d*)$
+    PublishEventAcceptedResult:
+      allOf:
+      - $ref: '#/components/schemas/PublishEventResultItemBase'
+      - properties: {}
+    InterchainTransferTokenWithAddress:
+      type: object
+      properties:
+        tokenAddress:
+          $ref: '#/components/schemas/Address'
+        amount:
+          $ref: '#/components/schemas/UnsignedBigInt'
+      required:
+      - tokenAddress
+      - amount
+    CannotExecuteMessageReason:
+      deprecated: true
+      type: string
+      enum:
+      - INSUFFICIENT_GAS
+      - ERROR
+      x-enum-varnames:
+      - CannotExecuteMessageReasonInsufficientGas
+      - CannotExecuteMessageReasonError
+    ITSLinkTokenStartedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          tokenID:
+            $ref: '#/components/schemas/TokenID'
+          destinationChain:
+            type: string
+            minLength: 1
+          sourceTokenAddress:
+            type: string
+            format: byte
+            minLength: 1
+          destinationTokenAddress:
+            type: string
+            format: byte
+            minLength: 1
+          tokenManagerType:
+            $ref: '#/components/schemas/TokenManagerType'
+        required:
+        - messageID
+        - tokenID
+        - destinationChain
+        - sourceTokenAddress
+        - destinationTokenAddress
+        - tokenManagerType
+    CallEventMetadata:
+      allOf:
+      - $ref: '#/components/schemas/EventMetadata'
+      - properties:
+          parentMessageID:
+            type: string
+            nullable: true
+            x-omitempty: true
+            minLength: 1
+          parentSourceChain:
+            type: string
+            nullable: true
+            x-omitempty: true
+            minLength: 1
+          senderContractAddress:
+            allOf:
+            - $ref: '#/components/schemas/Address'
+            nullable: true
+            x-omitempty: true
+          sourceContext:
+            $ref: '#/components/schemas/MessageContext'
+    VerificationStatus:
+      type: string
+      enum:
+      - SUCCEEDED_ON_SOURCE_CHAIN
+      - FAILED_ON_SOURCE_CHAIN
+      - NOT_FOUND_ON_SOURCE_CHAIN
+      - FAILED_TO_VERIFY
+      - IN_PROGRESS
+      - UNKNOWN
+      x-enum-varnames:
+      - VerificationStatusSucceededOnSourceChain
+      - VerificationStatusFailedOnSourceChain
+      - VerificationStatusNotFoundOnSourceChain
+      - VerificationStatusFailedToVerify
+      - VerificationStatusInProgress
+      - VerificationStatusUnknown
+    ExecuteTask:
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+        payload:
+          type: string
+          format: byte
+          minLength: 1
+        availableGasBalance:
+          $ref: '#/components/schemas/Token'
+      required:
+      - message
+      - payload
+      - availableGasBalance
+    ITSInterchainTransferReceivedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          sourceChain:
+            type: string
+            minLength: 1
+          sourceAddress:
+            type: string
+            format: byte
+            minLength: 1
+          destinationAddress:
+            $ref: '#/components/schemas/Address'
+          tokenReceived:
+            $ref: '#/components/schemas/InterchainTransferTokenWithID'
+          dataHash:
+            type: string
+            format: byte
+            minLength: 0
+        required:
+        - messageID
+        - sourceChain
+        - sourceAddress
+        - destinationAddress
+        - tokenReceived
+        - dataHash
+    DestinationChainTaskMetadata:
+      description: "Metadata attached to GATEWAY_TX and REACT_TO_EXPIRED_SIGNING_SESSION tasks. \nThe property `scopedMessages` can be omitted if the task isn't associated with any message (e.g. when executing `rotateSigners` https://github.com/axelarnetwork/axelar-gmp-sdk-solidity/blob/432449d7b330ec6edf5a8e0746644a253486ca87/contracts/gateway/AxelarAmplifierGateway.sol#L103C14-L103C27).\n"
+      type: object
+      properties:
+        sourceChainSenderContractAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          nullable: true
+          x-omitempty: true
+        scopedMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrossChainID'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          minLength: 1
+        requestID:
+          type: string
+          minLength: 1
+      required:
+      - error
+    WasmEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 1
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WasmEventAttribute'
+      required:
+      - type
+      - attributes
+    PublishEventErrorResult:
+      allOf:
+      - $ref: '#/components/schemas/PublishEventResultItemBase'
+      - properties:
+          error:
+            type: string
+            minLength: 1
+          retriable:
+            type: boolean
+        required:
+        - error
+        - retriable
+    CannotRouteMessageReason:
+      deprecated: true
+      type: string
+      enum:
+      - CUSTOM
+      - ERROR
+      x-enum-varnames:
+      - CannotRouteMessageReasonCustom
+      - CannotRouteMessageReasonError
+    ITSFlowLimitSetEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          tokenID:
+            $ref: '#/components/schemas/TokenID'
+          operator:
+            $ref: '#/components/schemas/Address'
+          flowLimit:
+            $ref: '#/components/schemas/UnsignedBigInt'
+        required:
+        - tokenID
+        - operator
+        - flowLimit
+    ConstructProofTask:
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+        payload:
+          type: string
+          format: byte
+          minLength: 1
+      required:
+      - message
+      - payload
+    WasmRequestWithObjectBody:
+      type: object
+      additionalProperties: {}
+    EventMetadata:
+      type: object
+      properties:
+        txID:
+          type: string
+          nullable: true
+          x-omitempty: true
+          minLength: 1
+        timestamp:
+          type: string
+          format: date-time
+        fromAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          nullable: true
+          x-omitempty: true
+        finalized:
+          type: boolean
+          nullable: true
+          x-omitempty: true
+          default: true
+    CannotExecuteMessageEventMetadata:
+      deprecated: true
+      type: object
+      properties:
+        fromAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          nullable: true
+          x-omitempty: true
+        timestamp:
+          type: string
+          format: date-time
+    InterchainTokenDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+          x-go-name: ID
+        name:
+          type: string
+          minLength: 1
+        symbol:
+          type: string
+          minLength: 1
+        decimals:
+          type: integer
+          format: uint8
+          minimum: 0
+      required:
+      - id
+      - name
+      - symbol
+      - decimals
+    CrossChainID:
+      type: object
+      properties:
+        sourceChain:
+          type: string
+          minLength: 1
+        messageID:
+          type: string
+          minLength: 1
+      required:
+      - sourceChain
+      - messageID
+    TaskItem:
+      properties:
+        id:
+          allOf:
+          - $ref: '#/components/schemas/TaskItemID'
+          x-go-name: ID
+        chain:
+          type: string
+          minLength: 1
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          $ref: '#/components/schemas/TaskType'
+        meta:
+          $ref: '#/components/schemas/TaskMetadata'
+        task:
+          $ref: '#/components/schemas/Task'
+      required:
+      - id
+      - chain
+      - timestamp
+      - type
+      - task
+    WasmRequest:
+      anyOf:
+      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
+      - $ref: '#/components/schemas/WasmRequestWithStringBody'
+    ITSInterchainTransferEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          destinationChain:
+            type: string
+            minLength: 1
+          tokenSpent:
+            $ref: '#/components/schemas/InterchainTransferTokenWithID'
+          sourceAddress:
+            $ref: '#/components/schemas/Address'
+          destinationAddress:
+            type: string
+            format: byte
+            minLength: 1
+          dataHash:
+            type: string
+            format: byte
+            minLength: 0
+        required:
+        - messageID
+        - destinationChain
+        - tokenSpent
+        - sourceAddress
+        - destinationAddress
+        - dataHash
+    ReactToExpiredSigningSessionTask:
+      properties:
+        sessionID:
+          type: integer
+          format: uint64
+        broadcastID:
+          $ref: '#/components/schemas/BroadcastID'
+        invokedContractAddress:
+          $ref: '#/components/schemas/Address'
+        requestPayload:
+          $ref: '#/components/schemas/WasmRequest'
+      required:
+      - sessionID
+      - broadcastID
+      - invokedContractAddress
+      - requestPayload
+    ITSTokenManagerDeployedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+            nullable: true
+          tokenID:
+            $ref: '#/components/schemas/TokenID'
+          tokenManager:
+            $ref: '#/components/schemas/Address'
+          tokenManagerType:
+            $ref: '#/components/schemas/TokenManagerType'
+        required:
+        - messageID
+        - tokenID
+        - tokenManager
+        - tokenManagerType
+    CannotExecuteMessageEvent:
+      deprecated: true
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/CannotExecuteMessageEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          taskItemID:
+            $ref: '#/components/schemas/TaskItemID'
+          reason:
+            $ref: '#/components/schemas/CannotExecuteMessageReason'
+          details:
+            type: string
+            minLength: 1
+        required:
+        - taskItemID
+        - reason
+        - details
+    UnsignedTokenWithRequiredID:
+      type: object
+      properties:
+        tokenID:
+          $ref: '#/components/schemas/TokenID'
+        amount:
+          $ref: '#/components/schemas/UnsignedBigInt'
+      required:
+      - tokenID
+      - amount
+    SignersRotatedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/SignersRotatedEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+        required:
+        - messageID
+    MessageContext:
+      type: object
+      additionalProperties:
+        type: string
+        maxLength: 1000
+      maxProperties: 10
+    CannotExecuteTaskReason:
+      type: string
+      enum:
+      - CUSTOM
+      - ERROR
+      - INSUFFICIENT_GAS
+      - TX_REVERTED
+      x-enum-varnames:
+      - CannotExecuteTaskReasonCustom
+      - CannotExecuteTaskReasonError
+      - CannotExecuteTaskReasonInsufficientGas
+      - CannotExecuteTaskReasonTxReverted
+    MessageApprovedEventMetadata:
+      allOf:
+      - $ref: '#/components/schemas/EventMetadata'
+      - properties:
+          commandID:
+            type: string
+            nullable: true
+            x-omitempty: true
+            minLength: 1
+    QuorumReachedEvent:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/VerificationStatus'
+        content:
+          x-go-type: json.RawMessage
+      required:
+      - status
+      - content
+    ITSTokenMetadataRegisteredEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          address:
+            $ref: '#/components/schemas/Address'
+          decimals:
+            type: integer
+            format: uint8
+            minimum: 0
+        required:
+        - messageID
+        - address
+        - decimals
+    GasCreditEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          refundAddress:
+            $ref: '#/components/schemas/Address'
+          payment:
+            $ref: '#/components/schemas/UnsignedToken'
+        required:
+        - messageID
+        - refundAddress
+        - payment
+    PublishEventResultItem:
+      oneOf:
+      - $ref: '#/components/schemas/PublishEventAcceptedResult'
+      - $ref: '#/components/schemas/PublishEventErrorResult'
+      discriminator:
+        propertyName: status
+        mapping:
+          ACCEPTED: '#/components/schemas/PublishEventAcceptedResult'
+          ERROR: '#/components/schemas/PublishEventErrorResult'
+    Address:
+      type: string
+      minLength: 1
+    TaskItemID:
+      type: string
+      minLength: 1
+      x-go-type: uuid.UUID
+      x-go-type-import:
+        path: github.com/google/uuid
+        name: uuid
+    MessageApprovedEvent:
+      deprecated: true
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          meta:
+            allOf:
+            - $ref: '#/components/schemas/MessageApprovedEventMetadata'
+            nullable: true
+            x-omitempty: true
+      - properties:
+          message:
+            $ref: '#/components/schemas/Message'
+          cost:
+            $ref: '#/components/schemas/Cost'
+        required:
+        - message
+        - cost
+    RefundTask:
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+        refundRecipientAddress:
+          $ref: '#/components/schemas/Address'
+        remainingGasBalance:
+          $ref: '#/components/schemas/UnsignedToken'
+      required:
+      - message
+      - refundRecipientAddress
+      - remainingGasBalance
+    ITSInterchainTokenDeployedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+            nullable: true
+          tokenID:
+            $ref: '#/components/schemas/TokenID'
+          tokenAddress:
+            $ref: '#/components/schemas/Address'
+          minter:
+            $ref: '#/components/schemas/Address'
+          name:
+            type: string
+            minLength: 1
+          symbol:
+            type: string
+            minLength: 1
+          decimals:
+            type: integer
+            format: uint8
+            minimum: 0
+        required:
+        - messageID
+        - tokenID
+        - tokenAddress
+        - minter
+        - name
+        - symbol
+        - decimals
+    ReactToWasmEventTask:
+      properties:
+        height:
+          type: integer
+          format: int64
+          minimum: 0
+        event:
+          $ref: '#/components/schemas/WasmEvent'
+      required:
+      - height
+      - event
+    PublishEventsResult:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishEventResultItem'
+      required:
+      - results
+    GasRefundedEvent:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EventBase'
+      - properties:
+          messageID:
+            type: string
+            minLength: 1
+          recipientAddress:
+            $ref: '#/components/schemas/Address'
+          refundedAmount:
+            $ref: '#/components/schemas/UnsignedToken'
+          cost:
+            $ref: '#/components/schemas/Cost'
+        required:
+        - messageID
+        - recipientAddress
+        - refundedAmount
+        - cost
+    TaskType:
+      type: string
+      enum:
+      - CONSTRUCT_PROOF
+      - EXECUTE
+      - GATEWAY_TX
+      - REACT_TO_WASM_EVENT
+      - REFUND
+      - VERIFY
+      - REACT_TO_EXPIRED_SIGNING_SESSION
+      - REACT_TO_RETRIABLE_POLL
+      x-enum-varnames:
+      - TaskTypeConstructProof
+      - TaskTypeExecute
+      - TaskTypeGatewayTransaction
+      - TaskTypeReactToWasmEvent
+      - TaskTypeRefund
+      - TaskTypeVerify
+      - TaskTypeReactToExpiredSigningSession
+      - TaskTypeReactToRetriablePoll
+    InterchainTransferTokenWithID:
+      type: object
+      properties:
+        tokenID:
+          $ref: '#/components/schemas/TokenID'
+        amount:
+          $ref: '#/components/schemas/UnsignedBigInt'
+      required:
+      - tokenID
+      - amount
+    UnsignedToken:
+      type: object
+      properties:
+        tokenID:
+          allOf:
+          - $ref: '#/components/schemas/TokenID'
+          nullable: true
+          x-omitempty: true
+        amount:
+          $ref: '#/components/schemas/UnsignedBigInt'
+      required:
+      - amount
+  parameters:
+    after:
+      name: after
+      in: query
+      required: false
+      schema:
+        type: string
+        x-go-type: uuid.UUID
+        x-go-type-import:
+          path: github.com/google/uuid
+          name: uuid
+      example: deadbeef-dead-beef-dead-beefdeadbeef
+    chain:
+      name: chain
+      in: path
+      required: true
+      schema:
+        type: string
+      example: ethereum
+    taskItemID:
+      name: taskItemID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/TaskItemID'
+      example: deadbeef-dead-beef-dead-beefdeadbeef
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+      example: 10

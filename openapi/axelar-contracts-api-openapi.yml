@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: Amplifier GMP Chains Contracts API
+  description: Integration layer for Amplifier chains
+  version: 1.0.0
+tags:
+- name: Contracts
+paths:
+  /contracts/{wasmContractAddress}/broadcasts:
+    post:
+      summary: Broadcast arbitrary MsgExecuteContract transaction
+      operationId: broadcastMsgExecuteContract
+      parameters:
+      - $ref: '#/components/parameters/wasmContractAddress'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WasmRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Contracts
+  /contracts/{wasmContractAddress}/broadcasts/{broadcastID}:
+    get:
+      summary: Get broadcast status
+      operationId: getMsgExecuteContractBroadcastStatus
+      parameters:
+      - $ref: '#/components/parameters/wasmContractAddress'
+      - $ref: '#/components/parameters/broadcastID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastStatusResponse'
+        '404':
+          description: Broadcast Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Contracts
+  /contracts/{wasmContractAddress}/queries:
+    post:
+      summary: Query arbitrary contract state
+      operationId: queryContractState
+      parameters:
+      - $ref: '#/components/parameters/wasmContractAddress'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WasmRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractQueryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Contract Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Contracts
+components:
+  schemas:
+    WasmEventAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required:
+      - key
+      - value
+    BroadcastStatus:
+      type: string
+      enum:
+      - RECEIVED
+      - SUCCESS
+      - ERROR
+      x-enum-varnames:
+      - BroadcastStatusReceived
+      - BroadcastStatusSuccess
+      - BroadcastStatusError
+    WasmRequestWithObjectBody:
+      type: object
+      additionalProperties: {}
+    BroadcastID:
+      type: string
+      minLength: 1
+      x-go-type: uuid.UUID
+      x-go-type-import:
+        path: github.com/google/uuid
+        name: uuid
+    WasmRequestWithStringBody:
+      type: string
+      minLength: 1
+    ContractQueryResponse:
+      type: object
+      additionalProperties: {}
+    BroadcastStatusResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/BroadcastStatus'
+        receivedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        txEvents:
+          type: array
+          x-omitempty: true
+          items:
+            $ref: '#/components/schemas/WasmEvent'
+        txHash:
+          type: string
+          nullable: true
+          x-omitempty: true
+          minLength: 1
+        error:
+          type: string
+          nullable: true
+          x-omitempty: true
+          minLength: 1
+      required:
+      - receivedAt
+      - status
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          minLength: 1
+        requestID:
+          type: string
+          minLength: 1
+      required:
+      - error
+    WasmRequest:
+      anyOf:
+      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
+      - $ref: '#/components/schemas/WasmRequestWithStringBody'
+    WasmEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 1
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WasmEventAttribute'
+      required:
+      - type
+      - attributes
+    BroadcastResponse:
+      type: object
+      properties:
+        broadcastID:
+          $ref: '#/components/schemas/BroadcastID'
+      required:
+      - broadcastID
+  parameters:
+    broadcastID:
+      name: broadcastID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/BroadcastID'
+      example: deadbeef-dead-beef-dead-beefdeadbeef
+    wasmContractAddress:
+      name: wasmContractAddress
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^axelar1[acdefghjklmnpqrstuvwxyz023456789]{58}$
+      example: axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav

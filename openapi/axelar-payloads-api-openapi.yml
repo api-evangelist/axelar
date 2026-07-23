@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: Amplifier GMP Chains Payloads API
+  description: Integration layer for Amplifier chains
+  version: 1.0.0
+tags:
+- name: Payloads
+paths:
+  /payloads:
+    post:
+      summary: Temporarily store a large payload against its hash to bypass size restrictions on some chains.
+      operationId: storePayload
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorePayloadResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Payloads
+  /payloads/{hash}:
+    get:
+      summary: Retrieve a stored payload by its hash
+      operationId: getPayload
+      parameters:
+      - name: hash
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Keccak256Hash'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Payload Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Payloads
+components:
+  schemas:
+    Keccak256Hash:
+      type: string
+      pattern: ^0x[0-9a-f]{64}$
+    StorePayloadResult:
+      type: object
+      properties:
+        keccak256:
+          $ref: '#/components/schemas/Keccak256Hash'
+      required:
+      - keccak256
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          minLength: 1
+        requestID:
+          type: string
+          minLength: 1
+      required:
+      - error

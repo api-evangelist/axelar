@@ -1,0 +1,17 @@
+openapi: 3.0.3
+info:
+  title: Amplifier GMP Chains Health API
+  description: Integration layer for Amplifier chains
+  version: 1.0.0
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Health
