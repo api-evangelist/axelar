@@ -11,7 +11,19 @@ description: >-
   suite for querying network state, validator metrics, token transfer status,
   and GMP transaction data. Developer tooling includes the AxelarJS SDK, the
   Mobius Development Stack (MDS), and Axelar Virtual Machine (AVM).
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: free
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Free
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/axelar.png
 tags:
   - Blockchain
   - Cross-Chain
@@ -25,127 +37,151 @@ created: '2026-06-13'
 modified: '2026-06-13'
 specificationVersion: '0.19'
 apis:
-  - aid: axelar:axelarscan
-    name: Axelarscan API
-    description: >-
-      Retrieves information about the Axelar network and the AXL token.
-      Provides access to metrics such as circulating supply, total supply,
-      inflation, total value locked (TVL) across 80+ chains and 30+ assets,
-      network proposals, and overall chain health. Backed by OpenSearch-cached
-      data for sub-second responses on mainnet.
-    humanURL: https://docs.axelarscan.io/axelarscan
-    baseURL: https://api.axelarscan.io/api
-    tags:
-      - Network Stats
-      - TVL
-      - AXL Token
-      - Analytics
-    properties:
-      - type: Documentation
-        url: https://docs.axelarscan.io/axelarscan
-  - aid: axelar:validator
-    name: Axelar Validator API
-    description: >-
-      Exposes metrics for validators operating on the Axelar network, including
-      heartbeat status, uptime percentages, proposed block counts, voting
-      participation, and quadratic voting scores. Useful for delegators
-      evaluating validator performance and for monitoring infrastructure
-      reliability across the 75+ active validators.
-    humanURL: https://docs.axelarscan.io/validator
-    baseURL: https://api.axelarscan.io/api
-    tags:
-      - Validators
-      - Staking
-      - Network Health
-      - Metrics
-    properties:
-      - type: Documentation
-        url: https://docs.axelarscan.io/validator
-  - aid: axelar:token-transfer
-    name: Axelar Token Transfer API
-    description: >-
-      Provides insights into cross-chain token transfers executed through the
-      Axelar network. Returns transfer status, source and destination chain
-      details, asset denomination, amounts, confirmation counts, and historical
-      transfer statistics. Supports both gateway token transfers and Interchain
-      Token Service (ITS) transfers.
-    humanURL: https://docs.axelarscan.io/token-transfer
-    baseURL: https://api.axelarscan.io/api
-    tags:
-      - Token Transfer
-      - Cross-Chain
-      - ITS
-      - Bridge
-    properties:
-      - type: Documentation
-        url: https://docs.axelarscan.io/token-transfer
-  - aid: axelar:gmp
-    name: Axelar GMP API
-    description: >-
-      Returns information about General Message Passing (GMP) calls routed
-      through the Axelar network. Provides transaction status, source and
-      destination chain data, contract call payloads, gas payment status, gas
-      estimation, and recovery details for stuck or underfunded cross-chain
-      transactions. Complements the AxelarJS SDK GMP recovery methods.
-    humanURL: https://docs.axelarscan.io/gmp
-    baseURL: https://api.axelarscan.io/api
-    tags:
-      - GMP
-      - General Message Passing
-      - Cross-Chain Calls
-      - Gas Estimation
-    properties:
-      - type: Documentation
-        url: https://docs.axelarscan.io/gmp
-  - aid: axelar:amplifier-gmp-api
-    name: Axelar Amplifier GMP API
-    description: >-
-      The Amplifier GMP API is the HTTP REST integration layer exposed by the
-      Axelar Amplifier relayer service. External chain integrators and relayer
-      operators use it to publish on-chain events (CALL, MESSAGE_EXECUTED,
-      SIGNERS_ROTATED, ITS transfer events, etc.) and to poll pending
-      transaction tasks (EXECUTE, APPROVE_MESSAGES, ROTATE_SIGNERS) that must
-      be submitted to destination chains. Also supports CosmWasm contract
-      broadcast and query, and large payload pre-storage.
-    humanURL: https://github.com/axelarnetwork/amplifier-relayer-api
-    baseURL: https://amplifier.axelar.dev
-    tags:
-      - Amplifier
-      - GMP
-      - General Message Passing
-      - Cross-Chain
-      - Relayer
-      - CosmWasm
-    properties:
-      - type: Documentation
-        url: https://github.com/axelarnetwork/amplifier-relayer-api
-      - type: Repository
-        url: https://github.com/axelarnetwork/amplifier-relayer-api
-      - type: OpenAPI
-        url: openapi/amplifier-gmp-api.yaml
-  - aid: axelar:axelarjs-sdk
-    name: AxelarJS SDK
-    description: >-
-      JavaScript/TypeScript SDK wrapping common cross-chain operations on the
-      Axelar network. Key classes include AxelarAssetTransfer (generates
-      deposit addresses for token transfers), AxelarQueryAPI (fee estimation,
-      denom lookups, transfer status), and AxelarGMPRecoveryAPI (query GMP
-      transaction status, manual relay, execute destination contract, add gas).
-      Supports both MAINNET and TESTNET environments.
-    humanURL: https://docs.axelar.dev/dev/axelarjs-sdk/intro/
-    baseURL: https://github.com/axelarnetwork/axelarjs-sdk
-    tags:
-      - SDK
-      - JavaScript
-      - TypeScript
-      - NPM
-      - Token Transfer
-      - GMP Recovery
-    properties:
-      - type: Documentation
-        url: https://docs.axelar.dev/dev/axelarjs-sdk/intro/
-      - type: Repository
-        url: https://github.com/axelarnetwork/axelarjs-sdk
+- aid: axelar:axelarscan
+  name: Axelarscan API
+  description: >-
+    Retrieves information about the Axelar network and the AXL token. Provides access to metrics such
+    as circulating supply, total supply, inflation, total value locked (TVL) across 80+ chains and 30+
+    assets, network proposals, and overall chain health. Backed by OpenSearch-cached data for sub-second
+    responses on mainnet.
+  humanURL: https://docs.axelarscan.io/axelarscan
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Network Stats
+  - TVL
+  - AXL Token
+  - Analytics
+  properties:
+  - type: Documentation
+    url: https://docs.axelarscan.io/axelarscan
+- aid: axelar:validator
+  name: Axelar Validator API
+  description: >-
+    Exposes metrics for validators operating on the Axelar network, including heartbeat status, uptime
+    percentages, proposed block counts, voting participation, and quadratic voting scores. Useful for
+    delegators evaluating validator performance and for monitoring infrastructure reliability across the
+    75+ active validators.
+  humanURL: https://docs.axelarscan.io/validator
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Validators
+  - Staking
+  - Network Health
+  - Metrics
+  properties:
+  - type: Documentation
+    url: https://docs.axelarscan.io/validator
+- aid: axelar:token-transfer
+  name: Axelar Token Transfer API
+  description: >-
+    Provides insights into cross-chain token transfers executed through the Axelar network. Returns transfer
+    status, source and destination chain details, asset denomination, amounts, confirmation counts, and
+    historical transfer statistics. Supports both gateway token transfers and Interchain Token Service
+    (ITS) transfers.
+  humanURL: https://docs.axelarscan.io/token-transfer
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Token Transfer
+  - Cross-Chain
+  - ITS
+  - Bridge
+  properties:
+  - type: Documentation
+    url: https://docs.axelarscan.io/token-transfer
+- aid: axelar:gmp
+  name: Axelar GMP API
+  description: >-
+    Returns information about General Message Passing (GMP) calls routed through the Axelar network. Provides
+    transaction status, source and destination chain data, contract call payloads, gas payment status,
+    gas estimation, and recovery details for stuck or underfunded cross-chain transactions. Complements
+    the AxelarJS SDK GMP recovery methods.
+  humanURL: https://docs.axelarscan.io/gmp
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - GMP
+  - General Message Passing
+  - Cross-Chain Calls
+  - Gas Estimation
+  properties:
+  - type: Documentation
+    url: https://docs.axelarscan.io/gmp
+- aid: axelar:axelarjs-sdk
+  name: AxelarJS SDK
+  description: >-
+    JavaScript/TypeScript SDK wrapping common cross-chain operations on the Axelar network. Key classes
+    include AxelarAssetTransfer (generates deposit addresses for token transfers), AxelarQueryAPI (fee
+    estimation, denom lookups, transfer status), and AxelarGMPRecoveryAPI (query GMP transaction status,
+    manual relay, execute destination contract, add gas). Supports both MAINNET and TESTNET environments.
+  humanURL: https://docs.axelar.dev/dev/axelarjs-sdk/intro/
+  baseURL: https://github.com/axelarnetwork/axelarjs-sdk
+  tags:
+  - SDK
+  - JavaScript
+  - TypeScript
+  - NPM
+  - Token Transfer
+  - GMP Recovery
+  properties:
+  - type: Documentation
+    url: https://docs.axelar.dev/dev/axelarjs-sdk/intro/
+  - type: Repository
+    url: https://github.com/axelarnetwork/axelarjs-sdk
+- aid: axelar:axelar-chains-api
+  name: Axelar Chains API
+  description: The Chains API from Axelar — 3 operation(s) for chains.
+  humanURL: https://docs.axelarscan.io/axelarscan
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Chains
+  properties:
+  - type: OpenAPI
+    url: openapi/axelar-chains-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+  - type: Repository
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+- aid: axelar:axelar-contracts-api
+  name: Axelar Contracts API
+  description: The Contracts API from Axelar — 3 operation(s) for contracts.
+  humanURL: https://docs.axelarscan.io/axelarscan
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/axelar-contracts-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+  - type: Repository
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+- aid: axelar:axelar-health-api
+  name: Axelar Health API
+  description: The Health API from Axelar — 1 operation(s) for health.
+  humanURL: https://docs.axelarscan.io/axelarscan
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/axelar-health-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+  - type: Repository
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+- aid: axelar:axelar-payloads-api
+  name: Axelar Payloads API
+  description: The Payloads API from Axelar — 2 operation(s) for payloads.
+  humanURL: https://docs.axelarscan.io/axelarscan
+  baseURL: https://api.axelarscan.io/api
+  tags:
+  - Payloads
+  properties:
+  - type: OpenAPI
+    url: openapi/axelar-payloads-api-openapi.yml
+  - type: Documentation
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
+  - type: Repository
+    url: https://github.com/axelarnetwork/amplifier-relayer-api
 common:
   - type: AgenticAccess
     url: agentic-access/axelar-agentic-access.yml
