@@ -1,0 +1,20 @@
+{
+  "provider": "axelar",
+  "sources": [
+    "axelar-chains-api-openapi.yml",
+    "axelar-contracts-api-openapi.yml",
+    "axelar-health-api-openapi.yml",
+    "axelar-payloads-api-openapi.yml"
+  ],
+  "outputs": [
+    "axelar-chains-api-openapi.yml",
+    "axelar-contracts-api-openapi.yml",
+    "axelar-health-api-openapi.yml",
+    "axelar-payloads-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
