@@ -183,6 +183,13 @@ apis:
   - type: Repository
     url: https://github.com/axelarnetwork/amplifier-relayer-api
 common:
+  - type: IssueTracker
+    url: https://github.com/axelarnetwork/axelarjs-sdk/issues
+  - type: Releases
+    url: https://github.com/axelarnetwork/axelarjs-sdk/releases
+  - type: License
+    name: MIT
+    url: https://github.com/axelarnetwork/axelarjs-sdk/blob/main/LICENSE
   - type: AgenticAccess
     url: agentic-access/axelar-agentic-access.yml
   - type: DomainSecurity
