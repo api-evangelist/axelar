@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Amplifier GMP Chains Payloads API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payloads",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Temporarily store a large payload against its hash to bypass size restrictions on some chains.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/payloads"
+          },
+          "docs": "Temporarily store a large payload against its hash to bypass size restrictions on some chains."
+        },
+        {
+          "info": {
+            "name": "Retrieve a stored payload by its hash",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/payloads/:hash",
+            "params": [
+              {
+                "name": "hash",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a stored payload by its hash"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

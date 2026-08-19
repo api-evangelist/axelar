@@ -1,0 +1,91 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Amplifier GMP Chains API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Publish on-chain events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/chains/:chain/events",
+            "params": [
+              {
+                "name": "chain",
+                "value": "ethereum",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Publish on-chain events"
+        },
+        {
+          "info": {
+            "name": "Poll transaction to be executed on chain",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/chains/:chain/tasks",
+            "params": [
+              {
+                "name": "chain",
+                "value": "ethereum",
+                "type": "path"
+              },
+              {
+                "name": "after",
+                "value": "deadbeef-dead-beef-dead-beefdeadbeef",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Poll transaction to be executed on chain"
+        },
+        {
+          "info": {
+            "name": "Retrieve a transaction to be executed on-chain by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/chains/:chain/tasks/:taskItemID",
+            "params": [
+              {
+                "name": "chain",
+                "value": "ethereum",
+                "type": "path"
+              },
+              {
+                "name": "taskItemID",
+                "value": "deadbeef-dead-beef-dead-beefdeadbeef",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a transaction to be executed on-chain by id"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,85 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Amplifier GMP Chains Contracts API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Contracts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Broadcast arbitrary MsgExecuteContract transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contracts/:wasmContractAddress/broadcasts",
+            "params": [
+              {
+                "name": "wasmContractAddress",
+                "value": "axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Broadcast arbitrary MsgExecuteContract transaction"
+        },
+        {
+          "info": {
+            "name": "Get broadcast status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contracts/:wasmContractAddress/broadcasts/:broadcastID",
+            "params": [
+              {
+                "name": "wasmContractAddress",
+                "value": "axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav",
+                "type": "path"
+              },
+              {
+                "name": "broadcastID",
+                "value": "deadbeef-dead-beef-dead-beefdeadbeef",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get broadcast status"
+        },
+        {
+          "info": {
+            "name": "Query arbitrary contract state",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contracts/:wasmContractAddress/queries",
+            "params": [
+              {
+                "name": "wasmContractAddress",
+                "value": "axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Query arbitrary contract state"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
