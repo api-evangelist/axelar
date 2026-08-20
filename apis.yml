@@ -118,6 +118,13 @@ apis:
   - SDK
   - JavaScript
   - TypeScript
+  - npm
+  - Token Transfer
+  - GMP Recovery
+  tags_raw:
+  - SDK
+  - JavaScript
+  - TypeScript
   - NPM
   - Token Transfer
   - GMP Recovery
