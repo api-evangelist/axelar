@@ -78,6 +78,11 @@ apis:
   humanURL: https://docs.axelarscan.io/validator
   baseURL: https://api.axelarscan.io/api
   tags:
+  - Validator
+  - Staking
+  - Network Health
+  - Metrics
+  tags_raw:
   - Validators
   - Staking
   - Network Health
