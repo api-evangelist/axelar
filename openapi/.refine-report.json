@@ -1,10 +1,7 @@
 {
   "provider": "axelar",
   "sources": [
-    "axelar-chains-api-openapi.yml",
-    "axelar-contracts-api-openapi.yml",
-    "axelar-health-api-openapi.yml",
-    "axelar-payloads-api-openapi.yml"
+    "_original/amplifier-gmp-api.yaml"
   ],
   "outputs": [
     "axelar-chains-api-openapi.yml",
@@ -15,6 +12,28 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "amplifier-gmp-api.yaml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "amplifier-gmp-api.yaml: tagged paths GET /health -> Health",
+    "amplifier-gmp-api.yaml: tagged paths POST /contracts/{wasmContractAddress}/broadcasts -> Contracts",
+    "amplifier-gmp-api.yaml: tagged paths GET /contracts/{wasmContractAddress}/broadcasts/{broadcastID} -> Contracts",
+    "amplifier-gmp-api.yaml: tagged paths POST /contracts/{wasmContractAddress}/queries -> Contracts",
+    "amplifier-gmp-api.yaml: tagged paths POST /chains/{chain}/events -> Chains",
+    "amplifier-gmp-api.yaml: tagged paths GET /chains/{chain}/tasks -> Chains",
+    "amplifier-gmp-api.yaml: tagged paths GET /chains/{chain}/tasks/{taskItemID} -> Chains",
+    "amplifier-gmp-api.yaml: tagged paths POST /payloads -> Payloads",
+    "amplifier-gmp-api.yaml: tagged paths GET /payloads/{hash} -> Payloads",
+    "amplifier-gmp-api.yaml: declared missing tag: Chains",
+    "amplifier-gmp-api.yaml: declared missing tag: Contracts",
+    "amplifier-gmp-api.yaml: declared missing tag: Health",
+    "amplifier-gmp-api.yaml: declared missing tag: Payloads",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "axelar-chains-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "axelar-contracts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "axelar-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "axelar-payloads-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
