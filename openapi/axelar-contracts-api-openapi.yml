@@ -108,6 +108,32 @@ paths:
       - Contracts
 components:
   schemas:
+    WasmRequest:
+      anyOf:
+      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
+      - $ref: '#/components/schemas/WasmRequestWithStringBody'
+    WasmRequestWithStringBody:
+      type: string
+      minLength: 1
+    WasmEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 1
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WasmEventAttribute'
+      required:
+      - type
+      - attributes
+    ContractQueryResponse:
+      type: object
+      additionalProperties: {}
+    WasmRequestWithObjectBody:
+      type: object
+      additionalProperties: {}
     BroadcastStatusResponse:
       type: object
       properties:
@@ -139,6 +165,20 @@ components:
       required:
       - receivedAt
       - status
+    BroadcastID:
+      type: string
+      minLength: 1
+      x-go-type: uuid.UUID
+      x-go-type-import:
+        path: github.com/google/uuid
+        name: uuid
+    BroadcastResponse:
+      type: object
+      properties:
+        broadcastID:
+          $ref: '#/components/schemas/BroadcastID'
+      required:
+      - broadcastID
     WasmEventAttribute:
       type: object
       properties:
@@ -151,13 +191,6 @@ components:
       required:
       - key
       - value
-    BroadcastResponse:
-      type: object
-      properties:
-        broadcastID:
-          $ref: '#/components/schemas/BroadcastID'
-      required:
-      - broadcastID
     ErrorResponse:
       type: object
       properties:
@@ -169,9 +202,6 @@ components:
           minLength: 1
       required:
       - error
-    ContractQueryResponse:
-      type: object
-      additionalProperties: {}
     BroadcastStatus:
       type: string
       enum:
@@ -182,44 +212,7 @@ components:
       - BroadcastStatusReceived
       - BroadcastStatusSuccess
       - BroadcastStatusError
-    BroadcastID:
-      type: string
-      minLength: 1
-      x-go-type: uuid.UUID
-      x-go-type-import:
-        path: github.com/google/uuid
-        name: uuid
-    WasmRequestWithStringBody:
-      type: string
-      minLength: 1
-    WasmRequest:
-      anyOf:
-      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
-      - $ref: '#/components/schemas/WasmRequestWithStringBody'
-    WasmEvent:
-      type: object
-      properties:
-        type:
-          type: string
-          minLength: 1
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/WasmEventAttribute'
-      required:
-      - type
-      - attributes
-    WasmRequestWithObjectBody:
-      type: object
-      additionalProperties: {}
   parameters:
-    broadcastID:
-      name: broadcastID
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/BroadcastID'
-      example: deadbeef-dead-beef-dead-beefdeadbeef
     wasmContractAddress:
       name: wasmContractAddress
       in: path
@@ -228,3 +221,10 @@ components:
         type: string
         pattern: ^axelar1[acdefghjklmnpqrstuvwxyz023456789]{58}$
       example: axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav
+    broadcastID:
+      name: broadcastID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/BroadcastID'
+      example: deadbeef-dead-beef-dead-beefdeadbeef
