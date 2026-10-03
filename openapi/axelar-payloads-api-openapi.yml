@@ -72,13 +72,6 @@ paths:
       - Payloads
 components:
   schemas:
-    StorePayloadResult:
-      type: object
-      properties:
-        keccak256:
-          $ref: '#/components/schemas/Keccak256Hash'
-      required:
-      - keccak256
     ErrorResponse:
       type: object
       properties:
@@ -90,6 +83,13 @@ components:
           minLength: 1
       required:
       - error
+    StorePayloadResult:
+      type: object
+      properties:
+        keccak256:
+          $ref: '#/components/schemas/Keccak256Hash'
+      required:
+      - keccak256
     Keccak256Hash:
       type: string
       pattern: ^0x[0-9a-f]{64}$
