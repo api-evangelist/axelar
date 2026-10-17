@@ -72,6 +72,9 @@ paths:
       - Payloads
 components:
   schemas:
+    Keccak256Hash:
+      type: string
+      pattern: ^0x[0-9a-f]{64}$
     ErrorResponse:
       type: object
       properties:
@@ -83,9 +86,6 @@ components:
           minLength: 1
       required:
       - error
-    Keccak256Hash:
-      type: string
-      pattern: ^0x[0-9a-f]{64}$
     StorePayloadResult:
       type: object
       properties:

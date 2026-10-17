@@ -108,6 +108,49 @@ paths:
       - Contracts
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          minLength: 1
+        requestID:
+          type: string
+          minLength: 1
+      required:
+      - error
+    WasmEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 1
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WasmEventAttribute'
+      required:
+      - type
+      - attributes
+    WasmEventAttribute:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required:
+      - key
+      - value
+    BroadcastResponse:
+      type: object
+      properties:
+        broadcastID:
+          $ref: '#/components/schemas/BroadcastID'
+      required:
+      - broadcastID
     BroadcastStatusResponse:
       type: object
       properties:
@@ -139,45 +182,13 @@ components:
       required:
       - receivedAt
       - status
-    WasmEventAttribute:
-      type: object
-      properties:
-        key:
-          type: string
-          minLength: 1
-        value:
-          type: string
-          minLength: 1
-      required:
-      - key
-      - value
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          minLength: 1
-        requestID:
-          type: string
-          minLength: 1
-      required:
-      - error
-    WasmEvent:
-      type: object
-      properties:
-        type:
-          type: string
-          minLength: 1
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/WasmEventAttribute'
-      required:
-      - type
-      - attributes
     ContractQueryResponse:
       type: object
       additionalProperties: {}
+    WasmRequest:
+      anyOf:
+      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
+      - $ref: '#/components/schemas/WasmRequestWithStringBody'
     BroadcastID:
       type: string
       minLength: 1
@@ -185,9 +196,6 @@ components:
       x-go-type-import:
         path: github.com/google/uuid
         name: uuid
-    WasmRequestWithStringBody:
-      type: string
-      minLength: 1
     BroadcastStatus:
       type: string
       enum:
@@ -198,28 +206,13 @@ components:
       - BroadcastStatusReceived
       - BroadcastStatusSuccess
       - BroadcastStatusError
-    BroadcastResponse:
-      type: object
-      properties:
-        broadcastID:
-          $ref: '#/components/schemas/BroadcastID'
-      required:
-      - broadcastID
-    WasmRequest:
-      anyOf:
-      - $ref: '#/components/schemas/WasmRequestWithObjectBody'
-      - $ref: '#/components/schemas/WasmRequestWithStringBody'
+    WasmRequestWithStringBody:
+      type: string
+      minLength: 1
     WasmRequestWithObjectBody:
       type: object
       additionalProperties: {}
   parameters:
-    broadcastID:
-      name: broadcastID
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/BroadcastID'
-      example: deadbeef-dead-beef-dead-beefdeadbeef
     wasmContractAddress:
       name: wasmContractAddress
       in: path
@@ -228,3 +221,10 @@ components:
         type: string
         pattern: ^axelar1[acdefghjklmnpqrstuvwxyz023456789]{58}$
       example: axelar16mek8sdcsq78jltfue35zhm5ds0cxpl0dfnrel8kck3jwtecdtnqcejdav
+    broadcastID:
+      name: broadcastID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/BroadcastID'
+      example: deadbeef-dead-beef-dead-beefdeadbeef
