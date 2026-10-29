@@ -1,4 +1,4 @@
-# Axelar (axelar)
+# Axelar
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,156 +66,144 @@
 
 Axelar is a decentralized cross-chain communication network that enables secure interoperability across 80+ blockchains including EVM chains, Cosmos, Solana, Sui, Stellar, and XRPL. The network provides General Message Passing (GMP) for arbitrary cross-chain contract calls, the Interchain Token Service (ITS) for deploying and bridging tokens across chains, and the Axelarscan API suite for querying network state, validator metrics, token transfer status, and GMP transaction data. Developer tooling includes the AxelarJS SDK, the Mobius Development Stack (MDS), and Axelar Virtual Machine (AVM).
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/axelar/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/axelar/refs/heads/main/apis.yml)
+**Areas:** Blockchain · Cross-Chain · Interoperability · Web3 · General Message Passing · Token Bridge · Cosmos · EVM
 
-## Tags
+## Axelar on APIs.io
 
-- Blockchain
-- Cross-Chain
-- Interoperability
-- Web3
-- General Message Passing
-- Token Bridge
-- Cosmos
-- EVM
+Everything profiled for Axelar is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/axelar/](https://apis.io/providers/axelar/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (9)
 
-- **Created:** 2026-06-13
-- **Modified:** 2026-06-13
+- [Axelarscan API](https://apis.io/apis/axelar/axelarscan/) — Retrieves information about the Axelar network and the AXL token. Provides access to metrics such as circulating supply, total supply, inflation, total…
+- [Axelar Validator API](https://apis.io/apis/axelar/validator/) — Exposes metrics for validators operating on the Axelar network, including heartbeat status, uptime percentages, proposed block counts, voting participation,…
+- [Axelar Token Transfer API](https://apis.io/apis/axelar/token-transfer/) — Provides insights into cross-chain token transfers executed through the Axelar network. Returns transfer status, source and destination chain details, asset…
+- [Axelar GMP API](https://apis.io/apis/axelar/gmp/) — Returns information about General Message Passing (GMP) calls routed through the Axelar network. Provides transaction status, source and destination chain…
+- [AxelarJS SDK](https://apis.io/apis/axelar/axelarjs-sdk/) — JavaScript/TypeScript SDK wrapping common cross-chain operations on the Axelar network. Key classes include AxelarAssetTransfer (generates deposit addresses…
+- [Axelar Chains API](https://apis.io/apis/axelar/axelar-chains-api/) — The Chains API from Axelar — 3 operation(s) for chains.
+- [Axelar Contracts API](https://apis.io/apis/axelar/axelar-contracts-api/) — The Contracts API from Axelar — 3 operation(s) for contracts.
+- [Axelar Health API](https://apis.io/apis/axelar/axelar-health-api/) — The Health API from Axelar — 1 operation(s) for health.
+- [Axelar Payloads API](https://apis.io/apis/axelar/axelar-payloads-api/) — The Payloads API from Axelar — 2 operation(s) for payloads.
 
-## APIs
+### Published properties
 
-### Axelarscan API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Retrieves information about the Axelar network and the AXL token. Provides access to metrics such as circulating supply, total supply, inflation, total value locked (TVL) across 80+ chains and 30+ assets, network proposals, and overall chain health. Backed by OpenSearch-cached data for sub-second responses on mainnet.
+#### Agentic access (1)
 
-- **Human URL:** [https://docs.axelarscan.io/axelarscan](https://docs.axelarscan.io/axelarscan)
-- **Base URL:** `https://api.axelarscan.io/api`
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Tags
+- [Axelar Agentic Access](https://apis.io/agentic-access/axelar/axelar-agentic-access/)
 
-- Network Stats
-- TVL
-- AXL Token
-- Analytics
+#### JSON Schema (1)
 
-#### Properties
+The data models the API reads and writes.
 
-- [Documentation](https://docs.axelarscan.io/axelarscan)
+- [Amplifier GMP API Schemas](https://apis.io/schemas/axelar/amplifier-gmp-api/)
 
-### Axelar Validator API
+#### Examples (3)
 
-Exposes metrics for validators operating on the Axelar network, including heartbeat status, uptime percentages, proposed block counts, voting participation, and quadratic voting scores. Useful for delegators evaluating validator performance and for monitoring infrastructure reliability across the 75+ active validators.
+Example requests and responses.
 
-- **Human URL:** [https://docs.axelarscan.io/validator](https://docs.axelarscan.io/validator)
-- **Base URL:** `https://api.axelarscan.io/api`
+- [Broadcast Contract Request](https://apis.io/examples/axelar/broadcast-contract-request/)
+- [Get Tasks Response](https://apis.io/examples/axelar/get-tasks-response/)
+- [Publish Events Request](https://apis.io/examples/axelar/publish-events-request/)
 
-#### Tags
+#### Collections (4)
 
-- Validators
-- Staking
-- Network Health
-- Metrics
+Postman and Open Collection request collections.
 
-#### Properties
+- [Amplifier GMP Chains API](https://apis.io/collections/axelar/open-axelar-chains-api/)
+- [Amplifier GMP Chains Contracts API](https://apis.io/collections/axelar/open-axelar-contracts-api/)
+- [Amplifier GMP Chains Health API](https://apis.io/collections/axelar/open-axelar-health-api/)
+- [Amplifier GMP Chains Payloads API](https://apis.io/collections/axelar/open-axelar-payloads-api/)
 
-- [Documentation](https://docs.axelarscan.io/validator)
+#### Governance rules (1)
 
-### Axelar Token Transfer API
+Spectral rulesets for the provider's contracts.
 
-Provides insights into cross-chain token transfers executed through the Axelar network. Returns transfer status, source and destination chain details, asset denomination, amounts, confirmation counts, and historical transfer statistics. Supports both gateway token transfers and Interchain Token Service (ITS) transfers.
+- [Axelar — jsonschema rules](https://apis.io/rules/axelar/axelar-jsonschema-spectral-rules/)
 
-- **Human URL:** [https://docs.axelarscan.io/token-transfer](https://docs.axelarscan.io/token-transfer)
-- **Base URL:** `https://api.axelarscan.io/api`
+#### Security (1)
 
-#### Tags
+Authentication, trust centre, and vulnerability disclosure.
 
-- Token Transfer
-- Cross-Chain
-- ITS
-- Bridge
+- [Axelar Domain Security](https://apis.io/security/axelar/axelar-domain-security/)
 
-#### Properties
+#### Plans and pricing (1)
 
-- [Documentation](https://docs.axelarscan.io/token-transfer)
+Published plans, tiers and prices.
 
-### Axelar GMP API
+- [Axelar Plans Pricing](https://apis.io/plans/axelar/axelar-plans-pricing/)
 
-Returns information about General Message Passing (GMP) calls routed through the Axelar network. Provides transaction status, source and destination chain data, contract call payloads, gas payment status, gas estimation, and recovery details for stuck or underfunded cross-chain transactions. Complements the AxelarJS SDK GMP recovery methods.
+#### Rate limits (1)
 
-- **Human URL:** [https://docs.axelarscan.io/gmp](https://docs.axelarscan.io/gmp)
-- **Base URL:** `https://api.axelarscan.io/api`
+Published request limits.
 
-#### Tags
+- [Axelar Rate Limits](https://apis.io/rate-limits/axelar/axelar-rate-limits/)
 
-- GMP
-- General Message Passing
-- Cross-Chain Calls
-- Gas Estimation
+#### FinOps (1)
 
-#### Properties
+What the API costs to run, by operation.
 
-- [Documentation](https://docs.axelarscan.io/gmp)
+- [Axelar Finops](https://apis.io/finops/axelar/axelar-finops/)
 
-### Axelar Amplifier GMP API
+## Where to find this API
 
-The Amplifier GMP API is the HTTP REST integration layer exposed by the Axelar Amplifier relayer service. External chain integrators and relayer operators use it to publish on-chain events (CALL, MESSAGE_EXECUTED, SIGNERS_ROTATED, ITS transfer events, etc.) and to poll pending transaction tasks (EXECUTE, APPROVE_MESSAGES, ROTATE_SIGNERS) that must be submitted to destination chains. Also supports CosmWasm contract broadcast and query, and large payload pre-storage.
-
-- **Human URL:** [https://github.com/axelarnetwork/amplifier-relayer-api](https://github.com/axelarnetwork/amplifier-relayer-api)
-- **Base URL:** `https://amplifier.axelar.dev`
-
-#### Tags
-
-- Amplifier
-- GMP
-- General Message Passing
-- Cross-Chain
-- Relayer
-- CosmWasm
-
-#### Properties
-
-- [Documentation](https://github.com/axelarnetwork/amplifier-relayer-api)
-- [Repository](https://github.com/axelarnetwork/amplifier-relayer-api)
-- [OpenAPI](openapi/amplifier-gmp-api.yaml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-
-### AxelarJS SDK
-
-JavaScript/TypeScript SDK wrapping common cross-chain operations on the Axelar network. Key classes include AxelarAssetTransfer (generates deposit addresses for token transfers), AxelarQueryAPI (fee estimation, denom lookups, transfer status), and AxelarGMPRecoveryAPI (query GMP transaction status, manual relay, execute destination contract, add gas). Supports both MAINNET and TESTNET environments.
-
-- **Human URL:** [https://docs.axelar.dev/dev/axelarjs-sdk/intro/](https://docs.axelar.dev/dev/axelarjs-sdk/intro/)
-- **Base URL:** `https://github.com/axelarnetwork/axelarjs-sdk`
-
-#### Tags
-
-- SDK
-- JavaScript
-- TypeScript
-- NPM
-- Token Transfer
-- GMP Recovery
-
-#### Properties
-
-- [Documentation](https://docs.axelar.dev/dev/axelarjs-sdk/intro/)
-- [Repository](https://github.com/axelarnetwork/axelarjs-sdk)
-
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://axelar.network/)
 - [Documentation](https://docs.axelar.dev/)
-- [Git Hub](https://github.com/axelarnetwork)
-- [Explorer](https://axelarscan.io/)
-- [A P I Documentation](https://docs.axelarscan.io/)
-- [Discord](https://discord.com/invite/aRZ3Ra6f7D)
-- [Twitter](https://twitter.com/axelar)
 - [Blog](https://axelar.network/blog)
-- [Plans](plans/axelar-plans-pricing.yml)
-- [Rate Limits](rate-limits/axelar-rate-limits.yml)
-- [Fin Ops](finops/axelar-finops.yml)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 24.0** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 35.2 |
+| Contract governance | 9.8 |
+| Operational transparency | 28.9 |
+| Developer ergonomics | 23.8 |
+| Access clarity | 5.3 |
+
+**Agent readiness 21.1** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 5.9** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/axelar/](https://apis.io/providers/axelar/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Axelar: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/axelar/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
